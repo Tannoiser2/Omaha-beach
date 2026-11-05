@@ -175,7 +175,7 @@
 "a": 31,
 "cod": "RINFORZA_US",
 "par": 1,
-"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 1a Divisione."
+"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 1ª Divisione."
 }
 ]
 },
@@ -231,7 +231,7 @@
 "a": 31,
 "cod": "RINFORZA_US",
 "par": 29,
-"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 29a Divisione."
+"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 29ª Divisione."
 }
 ]
 },
@@ -285,7 +285,7 @@
 "a": 31,
 "cod": "RINFORZA_US",
 "par": 29,
-"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 29a Divisione."
+"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 29ª Divisione."
 }
 ]
 },
@@ -383,7 +383,7 @@
 1,
 1
 ],
-"testo": "Piazza un Eroe su un'unità della 1a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+"testo": "Piazza un Eroe su un'unità della 1ª Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
 },
 {
 "da": 21,
@@ -675,7 +675,7 @@
 29,
 1
 ],
-"testo": "Piazza un Eroe su un'unità della 29a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+"testo": "Piazza un Eroe su un'unità della 29ª Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
 },
 {
 "da": 11,
@@ -1024,7 +1024,7 @@
 "a": 31,
 "cod": "RINFORZA_US",
 "par": 1,
-"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 1a Divisione."
+"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 1ª Divisione."
 }
 ]
 },
@@ -1182,7 +1182,7 @@
 1,
 1
 ],
-"testo": "Piazza un Eroe su un'unità della 1a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+"testo": "Piazza un Eroe su un'unità della 1ª Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
 },
 {
 "da": 21,
@@ -1404,7 +1404,7 @@
 1,
 1
 ],
-"testo": "Piazza un Eroe su un'unità della 1a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+"testo": "Piazza un Eroe su un'unità della 1ª Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
 },
 {
 "da": 21,
@@ -1472,7 +1472,7 @@
 "a": 31,
 "cod": "RINFORZA_US",
 "par": 1,
-"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 1a Divisione."
+"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 1ª Divisione."
 }
 ]
 },
@@ -1562,7 +1562,7 @@
 29,
 1
 ],
-"testo": "Piazza un Eroe su un'unità della 29a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+"testo": "Piazza un Eroe su un'unità della 29ª Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
 },
 {
 "da": 21,
@@ -1683,7 +1683,7 @@
 29,
 0
 ],
-"testo": "Piazza un Eroe su un'unità della 29a Divisione."
+"testo": "Piazza un Eroe su un'unità della 29ª Divisione."
 }
 ]
 },
@@ -1726,7 +1726,7 @@
 29,
 1
 ],
-"testo": "Piazza un Eroe su un'unità della 29a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+"testo": "Piazza un Eroe su un'unità della 29ª Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
 },
 {
 "da": 11,
@@ -1884,7 +1884,7 @@
 1,
 0
 ],
-"testo": "Piazza un Eroe su un'unità della 1a Divisione."
+"testo": "Piazza un Eroe su un'unità della 1ª Divisione."
 },
 {
 "da": 11,
@@ -1945,7 +1945,7 @@
 1,
 1
 ],
-"testo": "Piazza un Eroe su un'unità della 1a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+"testo": "Piazza un Eroe su un'unità della 1ª Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
 },
 {
 "da": 21,
@@ -2002,7 +2002,7 @@
 "a": 20,
 "cod": "PATTUGLIA",
 "par": 29,
-"testo": "Rapporto di pattuglia US: rivela l'unità tedesca più vicina a un'unità della 29a Divisione."
+"testo": "Rapporto di pattuglia US: rivela l'unità tedesca più vicina a un'unità della 29ª Divisione."
 },
 {
 "da": 21,
@@ -2126,7 +2126,7 @@
 1,
 0
 ],
-"testo": "Piazza un Eroe su un'unità della 1a Divisione."
+"testo": "Piazza un Eroe su un'unità della 1ª Divisione."
 }
 ]
 },
@@ -2280,7 +2280,7 @@
 29,
 1
 ],
-"testo": "Piazza un Eroe su un'unità della 29a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+"testo": "Piazza un Eroe su un'unità della 29ª Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
 },
 {
 "da": 21,
@@ -2335,7 +2335,7 @@
 29,
 1
 ],
-"testo": "Piazza un Eroe su un'unità della 29a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+"testo": "Piazza un Eroe su un'unità della 29ª Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
 },
 {
 "da": 11,
@@ -2668,7 +2668,7 @@
 1,
 1
 ],
-"testo": "Piazza un Eroe su un'unità della 1a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+"testo": "Piazza un Eroe su un'unità della 1ª Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
 },
 {
 "da": 11,
@@ -2718,14 +2718,14 @@
 29,
 1
 ],
-"testo": "Piazza un Eroe su un'unità della 29a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+"testo": "Piazza un Eroe su un'unità della 29ª Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
 },
 {
 "da": 21,
 "a": 31,
 "cod": "PATTUGLIA",
 "par": 1,
-"testo": "Rapporto di pattuglia US: rivela l'unità tedesca più vicina a un'unità della 1a Divisione."
+"testo": "Rapporto di pattuglia US: rivela l'unità tedesca più vicina a un'unità della 1ª Divisione."
 }
 ]
 },
@@ -2936,7 +2936,7 @@
 "a": 20,
 "cod": "PRIGIONIERO",
 "par": 1,
-"testo": "Un prigioniero tedesco parla: rivela un'unità tedesca a scelta nel settore della 1a Divisione."
+"testo": "Un prigioniero tedesco parla: rivela un'unità tedesca a scelta nel settore della 1ª Divisione."
 },
 {
 "da": 21,
@@ -3006,7 +3006,7 @@
 "a": 31,
 "cod": "PRIGIONIERO",
 "par": 29,
-"testo": "Un prigioniero tedesco parla: rivela un'unità tedesca a scelta nel settore della 29a Divisione."
+"testo": "Un prigioniero tedesco parla: rivela un'unità tedesca a scelta nel settore della 29ª Divisione."
 }
 ]
 }

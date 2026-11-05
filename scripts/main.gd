@@ -590,9 +590,9 @@ func _aggiorna() -> void:
 	lbl_fase.text = "%s - %s - %s.  Fuoco navale: %d." % [g.nome_scenario(), g.nome_marea(), fasi.get(g.s["fase"], g.s["fase"]), g.s["navali"]]
 	var perd: Dictionary = g.s["perdite"]
 	if g.easy():
-		lbl_azioni.text = "Azioni 1a Divisione: %d   |   Perdite fanteria: %d/8" % [g.s["azioni"]["1"], perd["1"].size()]
+		lbl_azioni.text = "Azioni 1ª Divisione: %d   |   Perdite fanteria: %d/8" % [g.s["azioni"]["1"], perd["1"].size()]
 	else:
-		lbl_azioni.text = "Azioni: 1a Div %d, 29a Div %d   |   Perdite fanteria: 1a %d/8, 29a %d/8" % [g.s["azioni"]["1"], g.s["azioni"]["29"], perd["1"].size(), perd["29"].size()]
+		lbl_azioni.text = "Azioni: 1ª Div %d, 29ª Div %d   |   Perdite fanteria: 1ª %d/8, 29ª %d/8" % [g.s["azioni"]["1"], g.s["azioni"]["29"], perd["1"].size(), perd["29"].size()]
 	btn_fine.disabled = g.s["fase"] != "azioni"
 	btn_navale.disabled = g.s["fase"] != "azioni" or g.s["navali"] <= 0
 	btn_navale.text = "Fuoco navale (%d)" % g.s["navali"]
@@ -624,7 +624,7 @@ func _aggiorna() -> void:
 	vv.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	vv.add_child(_label(u["id"], 22, f_titoli, C_KAKI))
 	var tipi = {"fanteria": "Compagnia di fanteria", "pesante": "Fanteria pesante (gittata 2)", "ranger": "Ranger", "carro": "Carri (mezza compagnia)", "antiaerea": "Contraerea", "antiaerea_sp": "Contraerea semovente", "anticarro": "Anticarro", "artiglieria": "Artiglieria", "artiglieria_sp": "Artiglieria semovente", "hq": "Quartier generale", "generale": "Generale"}
-	vv.add_child(_label("%s - %s Divisione" % [tipi.get(d["tipo"], d["tipo"]), "1a" if u["div"] == 1 else "29a"], 15))
+	vv.add_child(_label("%s - %s Divisione" % [tipi.get(d["tipo"], d["tipo"]), "1ª" if u["div"] == 1 else "29ª"], 15))
 	if not g.leader(u):
 		var p = g.passo(u)
 		vv.add_child(_label("Punti forza %d - attacco %d - gittata %s - simbolo %s" % [g.passi_rimasti(u), p["a"], "illimitata" if p["g"] >= 99 else str(int(p["g"])), Gioco.SIMBOLI.get(p["s"], "")], 15))
@@ -882,11 +882,11 @@ func _mostra_menu() -> void:
 	var t2 = _label("OMAHA BEACH", 58, f_titoli, Color(0.15, 0.62, 0.32))
 	t2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(t2)
-	var t3 = _label("6 giugno 1944 - gioco in solitario di John H. Butterfield (Decision Games). I tedeschi sono gestiti dal gioco: tu guidi la 1a e la 29a Divisione US all'assalto della spiaggia.", 16, null, C_KAKI)
+	var t3 = _label("6 giugno 1944 - gioco in solitario di John H. Butterfield (Decision Games). I tedeschi sono gestiti dal gioco: tu guidi la 1ª e la 29ª Divisione US all'assalto della spiaggia.", 16, null, C_KAKI)
 	t3.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(t3)
 	v.add_child(HSeparator.new())
-	v.add_child(_bottone("Easy Fox - scenario introduttivo (solo settore Est, 1a Divisione)", func(): _nuova("easy_fox")))
+	v.add_child(_bottone("Easy Fox - scenario introduttivo (solo settore Est, 1ª Divisione)", func(): _nuova("easy_fox")))
 	v.add_child(_bottone("La prima ondata - turni 1-16, tutta la spiaggia", func(): _nuova("prima_ondata")))
 	if FileAccess.file_exists(SALVATAGGIO):
 		v.add_child(_bottone("Continua la partita salvata su questo dispositivo", _carica_locale))

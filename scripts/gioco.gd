@@ -321,9 +321,9 @@ func inizia_azioni() -> void:
 					s["comando"][u["id"]] = []
 				s["comando"][u["id"]].append(l["id"])
 	if easy():
-		dlog("Fase delle azioni US: %d azioni per la 1a Divisione." % s["azioni"]["1"], "fase")
+		dlog("Fase delle azioni US: %d azioni per la 1ª Divisione." % s["azioni"]["1"], "fase")
 	else:
-		dlog("Fase delle azioni US: %d azioni per la 1a Divisione, %d per la 29a." % [s["azioni"]["1"], s["azioni"]["29"]], "fase")
+		dlog("Fase delle azioni US: %d azioni per la 1ª Divisione, %d per la 29ª." % [s["azioni"]["1"], s["azioni"]["29"]], "fase")
 
 func fine_azioni() -> void:
 	if s["fase"] != "azioni":
@@ -595,7 +595,7 @@ func controlla_catastrofe() -> void:
 		if s["perdite"][k].size() >= 8:
 			s["fine"] = "sconfitta"
 			s["fase"] = "fine_partita"
-			dlog("SCONFITTA CATASTROFICA: la %s Divisione ha perso otto compagnie di fanteria. Il comando chiude la spiaggia agli sbarchi." % ("1a" if k == "1" else "29a"), "finale")
+			dlog("SCONFITTA CATASTROFICA: la %s Divisione ha perso otto compagnie di fanteria. Il comando chiude la spiaggia agli sbarchi." % ("1ª" if k == "1" else "29ª"), "finale")
 
 # ---------------------------------------------------------------- eventi
 func fase_evento() -> void:

@@ -4,7 +4,7 @@ Versione digitale per uso personale di **D-Day at Omaha Beach** di John H. Butte
 il gioco in solitario sullo sbarco del 6 giugno 1944. I tedeschi sono interamente gestiti dal gioco, il giocatore comanda
 la 1a e la 29a Divisione US.
 
-Si gioca nel browser: https://tannoiser2.github.io/Omaha-Beach/ (e nella ludoteca privata, se ci sono i segreti di Cloudflare).
+Si gioca nel browser: https://tannoiser2.github.io/Omaha-beach/ (e nella ludoteca privata, se ci sono i segreti di Cloudflare).
 
 ## Scenari
 

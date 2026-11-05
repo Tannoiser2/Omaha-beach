@@ -24,7 +24,7 @@ func _process(_d: float) -> bool:
 	if n == 16:
 		for i in 4:
 			main.bot.gioca_turno(); main._avanza()
-	if n == 22:
+	if n == 22 and OS.get_environment("ZOOM") == "":
 		main.cam.zoom = Vector2(0.9, 0.9)
 		main.cam.position = main.g.mappa.centro("0711")
 		for u in main.g.sulla_mappa():
