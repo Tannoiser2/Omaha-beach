@@ -593,6 +593,9 @@ func _aggiorna() -> void:
 		lbl_azioni.text = "Azioni 1ª Divisione: %d   |   Perdite fanteria: %d/8" % [g.s["azioni"]["1"], perd["1"].size()]
 	else:
 		lbl_azioni.text = "Azioni: 1ª Div %d, 29ª Div %d   |   Perdite fanteria: 1ª %d/8, 29ª %d/8" % [g.s["azioni"]["1"], g.s["azioni"]["29"], perd["1"].size(), perd["29"].size()]
+	var pv = g.punti_vittoria()
+	var pool: Dictionary = g.s["pool"]
+	lbl_azioni.text += "\nPunti Vittoria ora: %d su %d (WN %d, rinforzi %d, valli %d)\nRiserve tedesche: rinforzi tattici %d, divisionali %d; segnalini Incognita WN %d, mobili %d, edifici %d" % [pv["totale"], pv["soglia"], pv["wn"], pv["rinforzi"], pv["valli"], pool["T"].size(), pool["D"].size(), pool["wn"].size(), pool["mobile"].size(), pool["edificio"].size()]
 	btn_fine.disabled = g.s["fase"] != "azioni"
 	btn_navale.disabled = g.s["fase"] != "azioni" or g.s["navali"] <= 0
 	btn_navale.text = "Fuoco navale (%d)" % g.s["navali"]
