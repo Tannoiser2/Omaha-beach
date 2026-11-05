@@ -1,0 +1,901 @@
+{
+"wn": [
+{
+"img": "wn_0",
+"armi": [
+"BZ",
+"BR"
+],
+"forza": 2,
+"cal": ""
+},
+{
+"img": "wn_1",
+"armi": [
+"MO",
+"MG"
+],
+"forza": 2,
+"cal": "75"
+},
+{
+"img": "wn_2",
+"armi": [
+"BG"
+],
+"forza": 1,
+"cal": ""
+},
+{
+"img": "wn_3",
+"armi": [
+"BZ",
+"MG"
+],
+"forza": 2,
+"cal": "88"
+},
+{
+"img": "wn_4",
+"armi": [
+"MO",
+"BR"
+],
+"forza": 1,
+"cal": ""
+},
+{
+"img": "wn_5",
+"armi": [
+"BG",
+"BZ"
+],
+"forza": 3,
+"cal": "75"
+},
+{
+"img": "wn_6",
+"armi": [
+"MO",
+"BZ"
+],
+"forza": 1,
+"cal": "75"
+},
+{
+"img": "wn_7",
+"armi": [
+"BG",
+"MO"
+],
+"forza": 2,
+"cal": "88"
+},
+{
+"img": "wn_8",
+"armi": [
+"BG"
+],
+"forza": 1,
+"cal": ""
+},
+{
+"img": "wn_9",
+"armi": [
+"BR"
+],
+"forza": 1,
+"cal": ""
+},
+{
+"img": "wn_10",
+"armi": [
+"BG"
+],
+"forza": 2,
+"cal": ""
+},
+{
+"img": "wn_11",
+"armi": [
+"BG",
+"BR"
+],
+"forza": 3,
+"cal": "75"
+},
+{
+"img": "wn_12",
+"armi": [
+"BG",
+"MG"
+],
+"forza": 2,
+"cal": "75"
+},
+{
+"img": "wn_13",
+"armi": [
+"BZ"
+],
+"forza": 2,
+"cal": ""
+},
+{
+"img": "wn_14",
+"armi": [
+"BG",
+"BZ"
+],
+"forza": 2,
+"cal": "75"
+},
+{
+"img": "wn_15",
+"armi": [
+"BZ"
+],
+"forza": 1,
+"cal": ""
+},
+{
+"img": "wn_16",
+"armi": [
+"BG"
+],
+"forza": 1,
+"cal": ""
+},
+{
+"img": "wn_17",
+"armi": [
+"MO",
+"BZ"
+],
+"forza": 1,
+"cal": "razzi"
+}
+],
+"dm": {
+"wn": [
+{
+"img": "dm_wn_0",
+"armi": [],
+"forza": 0,
+"tattico": true
+},
+{
+"img": "dm_wn_1",
+"armi": [
+"DE"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_wn_2",
+"armi": [
+"RD"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_wn_3",
+"armi": [
+"NA"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_wn_4",
+"armi": [
+"AR"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_wn_5",
+"armi": [],
+"forza": 0,
+"tattico": true
+},
+{
+"img": "dm_wn_6",
+"armi": [],
+"forza": 0,
+"tattico": true
+},
+{
+"img": "dm_wn_7",
+"armi": [
+"DE"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_wn_8",
+"armi": [
+"AR",
+"RD"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_wn_9",
+"armi": [
+"DE"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_wn_10",
+"armi": [
+"AR",
+"RD"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_wn_11",
+"armi": [
+"FL",
+"AR"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_wn_12",
+"armi": [
+"NA"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_wn_13",
+"armi": [],
+"forza": 0,
+"tattico": true
+},
+{
+"img": "dm_wn_14",
+"armi": [
+"NA"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_wn_15",
+"armi": [
+"RD"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_wn_16",
+"armi": [
+"AR",
+"DE"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_wn_17",
+"armi": [
+"AR"
+],
+"forza": 1,
+"tattico": false
+}
+],
+"mobile": [
+{
+"img": "dm_mobile_0",
+"armi": [
+"MG",
+"FL"
+],
+"forza": 3,
+"tattico": false
+},
+{
+"img": "dm_mobile_1",
+"armi": [
+"MG"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_mobile_2",
+"armi": [
+"FL"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_mobile_3",
+"armi": [
+"AR"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_mobile_4",
+"armi": [
+"DE"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_mobile_5",
+"armi": [
+"RD",
+"FL"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_mobile_6",
+"armi": [
+"MG",
+"FL"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_mobile_7",
+"armi": [
+"MG"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_mobile_8",
+"armi": [
+"RD",
+"MO"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_mobile_9",
+"armi": [
+"RD",
+"MO"
+],
+"forza": 3,
+"tattico": false
+},
+{
+"img": "dm_mobile_10",
+"armi": [
+"MO"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_mobile_11",
+"armi": [
+"RD"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_mobile_12",
+"armi": [
+"DE",
+"FL"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_mobile_13",
+"armi": [
+"AR",
+"RD"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_mobile_14",
+"armi": [
+"AR"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_mobile_15",
+"armi": [
+"FL",
+"RD"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_mobile_16",
+"armi": [
+"MG",
+"MO"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_mobile_17",
+"armi": [
+"FL",
+"MO"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_mobile_18",
+"armi": [
+"AR"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_mobile_19",
+"armi": [
+"AR"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_mobile_20",
+"armi": [
+"MG"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_mobile_21",
+"armi": [
+"MG",
+"MO"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_mobile_22",
+"armi": [
+"FL",
+"RD"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_mobile_23",
+"armi": [
+"AR"
+],
+"forza": 3,
+"tattico": false
+}
+],
+"edificio": [
+{
+"img": "dm_edificio_0",
+"armi": [],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_edificio_1",
+"armi": [
+"NA"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_edificio_2",
+"armi": [
+"RD",
+"DE"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_edificio_3",
+"armi": [
+"AR",
+"DE"
+],
+"forza": 1,
+"tattico": false
+},
+{
+"img": "dm_edificio_4",
+"armi": [
+"RD",
+"DE"
+],
+"forza": 3,
+"tattico": false
+},
+{
+"img": "dm_edificio_5",
+"armi": [
+"AR"
+],
+"forza": 3,
+"tattico": false
+},
+{
+"img": "dm_edificio_6",
+"armi": [
+"FL",
+"DE"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_edificio_7",
+"armi": [
+"FL"
+],
+"forza": 3,
+"tattico": false
+}
+]
+},
+"rinforzi": {
+"T": [
+{
+"id": "5/2/916",
+"img": "r_5_2_916",
+"armi": [
+"FL",
+"BR"
+],
+"forza": 4,
+"div": 352
+},
+{
+"id": "11/3/726",
+"img": "r_11_3_726",
+"armi": [
+"BZ"
+],
+"forza": 1,
+"div": 716
+},
+{
+"id": "8/2/916",
+"img": "r_8_2_916",
+"armi": [
+"BZ",
+"BR"
+],
+"forza": 3,
+"div": 352
+},
+{
+"id": "7/2/916",
+"img": "r_7_2_916",
+"armi": [
+"FL",
+"BZ"
+],
+"forza": 4,
+"div": 352
+},
+{
+"id": "9/3/726",
+"img": "r_9_3_726",
+"armi": [
+"FL"
+],
+"forza": 3,
+"div": 716
+},
+{
+"id": "10/3/726",
+"img": "r_10_3_726",
+"armi": [
+"BZ",
+"BR"
+],
+"forza": 1,
+"div": 716
+},
+{
+"id": "3/1/726",
+"img": "r_3_1_726",
+"armi": [
+"BR"
+],
+"forza": 2,
+"div": 716
+},
+{
+"id": "1/1/726",
+"img": "r_1_1_726",
+"armi": [
+"BR"
+],
+"forza": 1,
+"div": 716
+},
+{
+"id": "6/2/916",
+"img": "r_6_2_916",
+"armi": [
+"FL",
+"BZ"
+],
+"forza": 2,
+"div": 352
+}
+],
+"D": [
+{
+"id": "7/2/915",
+"img": "r_7_2_915",
+"armi": [
+"FL",
+"BR"
+],
+"forza": 4,
+"div": 352
+},
+{
+"id": "8/2/915",
+"img": "r_8_2_915",
+"armi": [
+"BR",
+"BZ"
+],
+"forza": 4,
+"div": 352
+},
+{
+"id": "6/2/915",
+"img": "r_6_2_915",
+"armi": [
+"FL",
+"BZ"
+],
+"forza": 4,
+"div": 352
+},
+{
+"id": "5/2/915",
+"img": "r_5_2_915",
+"armi": [
+"BZ",
+"FL"
+],
+"forza": 4,
+"div": 352
+},
+{
+"id": "3R/352",
+"img": "r_3R_352",
+"armi": [
+"BR"
+],
+"forza": 3,
+"div": 352
+},
+{
+"id": "2R/352",
+"img": "r_2R_352",
+"armi": [
+"BZ"
+],
+"forza": 3,
+"div": 352
+},
+{
+"id": "3P/352",
+"img": "r_3P_352",
+"armi": [
+"BZ",
+"BR"
+],
+"forza": 3,
+"div": 352
+},
+{
+"id": "1R/352",
+"img": "r_1R_352",
+"armi": [
+"FL"
+],
+"forza": 3,
+"div": 352
+},
+{
+"id": "2/1/726",
+"img": "r_2_1_726",
+"armi": [
+"BR"
+],
+"forza": 3,
+"div": 716
+},
+{
+"id": "1P/352",
+"img": "r_1P_352",
+"armi": [
+"FL",
+"BR"
+],
+"forza": 3,
+"div": 352
+},
+{
+"id": "2P/352",
+"img": "r_2P_352",
+"armi": [
+"FL",
+"BZ"
+],
+"forza": 3,
+"div": 352
+}
+],
+"M": [
+{
+"id": "3/Fus/352",
+"img": "r_3_Fus_352",
+"armi": [
+"BZ",
+"BR"
+],
+"forza": 3,
+"div": 352
+},
+{
+"id": "1/Fus/352",
+"img": "r_1_Fus_352",
+"armi": [
+"FL",
+"BR"
+],
+"forza": 3,
+"div": 352
+},
+{
+"id": "4/1/915",
+"img": "r_4_1_915",
+"armi": [
+"BR"
+],
+"forza": 4,
+"div": 352
+},
+{
+"id": "2/Fus/352",
+"img": "r_2_Fus_352",
+"armi": [
+"FL"
+],
+"forza": 3,
+"div": 352
+},
+{
+"id": "2/1/915",
+"img": "r_2_1_915",
+"armi": [
+"FL"
+],
+"forza": 4,
+"div": 352
+},
+{
+"id": "3/Fus/352B",
+"img": "r_3_Fus_352B",
+"armi": [
+"BZ"
+],
+"forza": 3,
+"div": 352
+},
+{
+"id": "3/1/915",
+"img": "r_3_1_915",
+"armi": [
+"FL",
+"BZ"
+],
+"forza": 4,
+"div": 352
+},
+{
+"id": "1/1/915",
+"img": "r_1_1_915",
+"armi": [
+"FL",
+"BZ"
+],
+"forza": 4,
+"div": 352
+}
+]
+},
+"artiglieria": [
+{
+"id": "1/1352 Est",
+"cal": "105",
+"settore": "E",
+"oss": [
+"WN60",
+"WN61",
+"WN62",
+"A6"
+],
+"img": "art_1352"
+},
+{
+"id": "1/Flak Est",
+"cal": "88",
+"settore": "E",
+"oss": [
+"WN64",
+"WN65",
+"WN67"
+],
+"img": "art_flak"
+},
+{
+"id": "1/1352 Ovest",
+"cal": "105",
+"settore": "W",
+"oss": [
+"WN66",
+"WN68",
+"D4"
+],
+"img": "art_1352"
+},
+{
+"id": "1/Flak Ovest",
+"cal": "88",
+"settore": "W",
+"oss": [
+"WN70",
+"WN71",
+"WN72",
+"G3"
+],
+"img": "art_flak"
+}
+]
+}

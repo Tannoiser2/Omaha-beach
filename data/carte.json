@@ -1,0 +1,3013 @@
+[
+{
+"n": 1,
+"sbarco": {
+"D": "A",
+"T": "A",
+"C": "C"
+},
+"mina": true,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "rosso",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "RINF",
+"par": [
+"E",
+"G"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona E, G (9.3)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"C",
+"D",
+"E"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona C, D, E (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "TOGLI_CONF",
+"par": null,
+"testo": "Togli la confusione da tutte le posizioni tedesche."
+}
+]
+},
+{
+"n": 2,
+"sbarco": {
+"D": "A",
+"T": "A",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "rosso",
+"doppio": false,
+"stella": true,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "CRISI",
+"par": [
+"A",
+"C",
+"G"
+],
+"testo": "I tedeschi segnalano una crisi. Rinforzi: uno in ciascuna zona A, C, G (9.3)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "PIOMBANTE",
+"par": null,
+"testo": "Tiro piombante tedesco: i punti di fuoco sporadico negli esagoni di spiaggia vicini a lati protettivi valgono come costanti."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "NAVALE",
+"par": null,
+"testo": "Ricevi un segnalino Fuoco Navale (8.5)."
+}
+]
+},
+{
+"n": 3,
+"sbarco": {
+"D": "C",
+"T": "A",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "rosso",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": false,
+"stella": false,
+"carri": true
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "FUMO",
+"par": [
+"WN72",
+"WN73"
+],
+"testo": "Il fumo copre la spiaggia: in questo turno non sparano WN72 e WN73."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"B",
+"D",
+"E"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona B, D, E (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINFORZA_US",
+"par": 1,
+"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 1a Divisione."
+}
+]
+},
+{
+"n": 4,
+"sbarco": {
+"D": "A",
+"T": "A",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "rosso",
+"doppio": true,
+"stella": false,
+"carri": true
+},
+{
+"col": "blu",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": {
+"n": 3,
+"cal": [
+"75",
+"88",
+"105"
+]
+},
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "NAVALE",
+"par": [
+"E"
+],
+"testo": "Ricevi un segnalino Fuoco Navale (8.5) e piazza un rinforzo tedesco nella zona E (9.3)."
+},
+{
+"da": 11,
+"a": 31,
+"cod": "RINFORZA_US",
+"par": 29,
+"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 29a Divisione."
+}
+]
+},
+{
+"n": 5,
+"sbarco": {
+"D": "B",
+"T": "A",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": true,
+"carri": false
+},
+{
+"col": "rosso",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "RAZZI",
+"par": null,
+"testo": "Screaming Meemies! I lanciarazzi di WN69 colpiscono un'unità US."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "TOGLI_CONF",
+"par": null,
+"testo": "Togli la confusione da tutte le posizioni tedesche."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINFORZA_US",
+"par": 29,
+"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 29a Divisione."
+}
+]
+},
+{
+"n": 6,
+"sbarco": {
+"D": "B",
+"T": "A",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "rosso",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": {
+"n": 2,
+"cal": [
+"88",
+"105"
+]
+},
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "NAVALE",
+"par": [
+"C"
+],
+"testo": "Ricevi un segnalino Fuoco Navale (8.5) e piazza un rinforzo tedesco nella zona C (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "CECCHINI",
+"par": null,
+"testo": "I cecchini colpiscono le staffette (solo modalità estesa)."
+}
+]
+},
+{
+"n": 7,
+"sbarco": {
+"D": "A",
+"T": "C",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "rosso",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": true,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "EROE",
+"par": [
+1,
+1
+],
+"testo": "Piazza un Eroe su un'unità della 1a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "NAVALE_INATTESO",
+"par": {
+"D": "WN62",
+"T": "A4",
+"C": "C1"
+},
+"testo": "Fuoco navale US inatteso colpisce una posizione: rombo WN62, triangolo A4, cerchio C1."
+}
+]
+},
+{
+"n": 8,
+"sbarco": {
+"D": "B",
+"T": "A",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "rosso",
+"doppio": false,
+"stella": false,
+"carri": true
+},
+{
+"col": "marrone",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "INIZIATIVA",
+"par": null,
+"testo": "Iniziativa dei soldati: in questo turno ogni Divisione ha un'azione in più."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "NAVALE_INATTESO",
+"par": {
+"D": "WN66",
+"T": "A6",
+"C": "G5"
+},
+"testo": "Fuoco navale US inatteso colpisce una posizione: rombo WN66, triangolo A6, cerchio G5."
+}
+]
+},
+{
+"n": 9,
+"sbarco": {
+"D": "A",
+"T": "D",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": true
+},
+{
+"col": "viola",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "FUMO",
+"par": [
+"WN66",
+"WN68"
+],
+"testo": "Il fumo copre la spiaggia: in questo turno non sparano WN66 e WN68."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"A",
+"D",
+"E"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona A, D, E (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "NASCOSTI",
+"par": [
+"C",
+"D"
+],
+"testo": "Tedeschi nascosti: vanno in confusione le unità US con simbolo cerchio e rombo adiacenti a rinforzi tedeschi non rivelati."
+}
+]
+},
+{
+"n": 10,
+"sbarco": {
+"D": "A",
+"T": "B",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": true
+},
+{
+"col": "viola",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "FUMO",
+"par": [
+"WN62"
+],
+"testo": "Il fumo copre la spiaggia: in questo turno non sparano WN62."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "TOGLI_CONF",
+"par": null,
+"testo": "Togli la confusione da tutte le posizioni tedesche."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINF",
+"par": [
+"A",
+"G"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona A, G (9.3)."
+}
+]
+},
+{
+"n": 11,
+"sbarco": {
+"D": "D",
+"T": "A",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": false,
+"stella": true,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "FUMO",
+"par": [
+"WN64",
+"WN65"
+],
+"testo": "Il fumo copre la spiaggia: in questo turno non sparano WN64 e WN65."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"C",
+"E",
+"F"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona C, E, F (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINF",
+"par": [
+"B",
+"E"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona B, E (9.3)."
+}
+]
+},
+{
+"n": 12,
+"sbarco": {
+"D": "A",
+"T": "B",
+"C": "A"
+},
+"mina": true,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": true,
+"stella": true,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "EROE",
+"par": [
+29,
+1
+],
+"testo": "Piazza un Eroe su un'unità della 29a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "GENIO_BLOCCATO",
+"par": null,
+"testo": "L'artiglieria tedesca impedisce le operazioni del Genio in questo turno."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "NASCOSTI",
+"par": [
+"C",
+"T"
+],
+"testo": "Tedeschi nascosti: vanno in confusione le unità US con simbolo cerchio e triangolo adiacenti a rinforzi tedeschi non rivelati."
+}
+]
+},
+{
+"n": 13,
+"sbarco": {
+"D": "A",
+"T": "B",
+"C": "D"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": true,
+"stella": false,
+"carri": true
+},
+{
+"col": "viola",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "RINF",
+"par": [
+"A",
+"D"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona A, D (9.3)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "PIANI",
+"par": [
+"A",
+"C",
+"D",
+"E"
+],
+"testo": "I tedeschi catturano i piani US. Rinforzi: uno in ciascuna zona A, C, D, E (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINF",
+"par": [
+"C",
+"E"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona C, E (9.3)."
+}
+]
+},
+{
+"n": 14,
+"sbarco": {
+"D": "B",
+"T": "A",
+"C": "D"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": {
+"n": 1,
+"cal": [
+"88"
+]
+},
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "FUMO",
+"par": [
+"WN60",
+"WN61"
+],
+"testo": "Il fumo copre la spiaggia: in questo turno non sparano WN60 e WN61."
+},
+{
+"da": 11,
+"a": 31,
+"cod": "NAVALE",
+"par": null,
+"testo": "Ricevi un segnalino Fuoco Navale (8.5)."
+}
+]
+},
+{
+"n": 15,
+"sbarco": {
+"D": "B",
+"T": "D",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": true,
+"stella": true,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "RINF",
+"par": [
+"C",
+"G"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona C, G (9.3)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"A",
+"D",
+"F"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona A, D, F (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "CECCHINI",
+"par": null,
+"testo": "I cecchini colpiscono le staffette (solo modalità estesa)."
+}
+]
+},
+{
+"n": 16,
+"sbarco": {
+"D": "A",
+"T": "D",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "FUMO",
+"par": [
+"WN70",
+"WN71"
+],
+"testo": "Il fumo copre la spiaggia: in questo turno non sparano WN70 e WN71."
+},
+{
+"da": 11,
+"a": 31,
+"cod": "INIZIATIVA",
+"par": null,
+"testo": "Iniziativa dei soldati: in questo turno ogni Divisione ha un'azione in più."
+}
+]
+},
+{
+"n": 17,
+"sbarco": {
+"D": "D",
+"T": "A",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "INIZIATIVA",
+"par": null,
+"testo": "Iniziativa dei soldati: in questo turno ogni Divisione ha un'azione in più."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "PIOMBANTE",
+"par": null,
+"testo": "Tiro piombante tedesco: i punti di fuoco sporadico negli esagoni di spiaggia vicini a lati protettivi valgono come costanti."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "NAVALE",
+"par": null,
+"testo": "Ricevi un segnalino Fuoco Navale (8.5)."
+}
+]
+},
+{
+"n": 18,
+"sbarco": {
+"D": "D",
+"T": "B",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": false,
+"carri": true
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "INIZIATIVA",
+"par": null,
+"testo": "Iniziativa dei soldati: in questo turno ogni Divisione ha un'azione in più."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINFORZA_US",
+"par": 1,
+"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 1a Divisione."
+}
+]
+},
+{
+"n": 19,
+"sbarco": {
+"D": "A",
+"T": "B",
+"C": "D"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": true,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "RINF",
+"par": [
+"C",
+"G"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona C, G (9.3)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"B",
+"D",
+"G"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona B, D, G (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINF",
+"par": [
+"C",
+"G"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona C, G (9.3)."
+}
+]
+},
+{
+"n": 20,
+"sbarco": {
+"D": "B",
+"T": "A",
+"C": "D"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": true,
+"stella": true,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "DM_SETTORI",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca in ciascun settore (9.2)."
+},
+{
+"da": 11,
+"a": 31,
+"cod": "RINF",
+"par": [
+"A",
+"C",
+"G"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona A, C, G (9.3)."
+}
+]
+},
+{
+"n": 21,
+"sbarco": {
+"D": "B",
+"T": "D",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "EROE",
+"par": [
+1,
+1
+],
+"testo": "Piazza un Eroe su un'unità della 1a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "NAVALE",
+"par": null,
+"testo": "Ricevi un segnalino Fuoco Navale (8.5)."
+}
+]
+},
+{
+"n": 22,
+"sbarco": {
+"D": "A",
+"T": "D",
+"C": "B"
+},
+"mina": true,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": true,
+"stella": false,
+"carri": true
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "RINF",
+"par": [
+"A",
+"D"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona A, D (9.3)."
+},
+{
+"da": 11,
+"a": 31,
+"cod": "RAZZI",
+"par": null,
+"testo": "Screaming Meemies! I lanciarazzi di WN69 colpiscono un'unità US."
+}
+]
+},
+{
+"n": 23,
+"sbarco": {
+"D": "D",
+"T": "A",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": {
+"n": 4,
+"cal": [
+"75",
+"88",
+"105"
+]
+},
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "DM",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "TOGLI_CONF",
+"par": null,
+"testo": "Togli la confusione da tutte le posizioni tedesche."
+}
+]
+},
+{
+"n": 24,
+"sbarco": {
+"D": "D",
+"T": "B",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": true,
+"stella": false,
+"carri": true
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "DM_SETTORI",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca in ciascun settore (9.2)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"B",
+"D",
+"E"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona B, D, E (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "NASCOSTI",
+"par": [
+"D",
+"T"
+],
+"testo": "Tedeschi nascosti: vanno in confusione le unità US con simbolo rombo e triangolo adiacenti a rinforzi tedeschi non rivelati."
+}
+]
+},
+{
+"n": 25,
+"sbarco": {
+"D": "A",
+"T": "B",
+"C": "D"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": {
+"n": 4,
+"cal": [
+"75",
+"88",
+"105"
+]
+},
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "EROE",
+"par": [
+1,
+1
+],
+"testo": "Piazza un Eroe su un'unità della 1a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINF",
+"par": [
+"B",
+"D"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona B, D (9.3)."
+}
+]
+},
+{
+"n": 26,
+"sbarco": {
+"D": "B",
+"T": "A",
+"C": "C"
+},
+"mina": true,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": false,
+"stella": false,
+"carri": true
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "DM",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"C",
+"D",
+"G"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona C, D, G (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINFORZA_US",
+"par": 1,
+"testo": "Soldati dei reparti di supporto si uniscono alla fanteria: aggiungi un punto forza a una fanteria con 1 punto della 1a Divisione."
+}
+]
+},
+{
+"n": 27,
+"sbarco": {
+"D": "B",
+"T": "C",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": false,
+"stella": true,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "DM",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "TOGLI_CONF",
+"par": null,
+"testo": "Togli la confusione da tutte le posizioni tedesche."
+}
+]
+},
+{
+"n": 28,
+"sbarco": {
+"D": "A",
+"T": "C",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": false,
+"stella": false,
+"carri": true
+},
+{
+"col": "blu",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": false,
+"stella": true,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "EROE",
+"par": [
+29,
+1
+],
+"testo": "Piazza un Eroe su un'unità della 29a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINF",
+"par": [
+"C",
+"D"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona C, D (9.3)."
+}
+]
+},
+{
+"n": 29,
+"sbarco": {
+"D": "C",
+"T": "A",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": true,
+"stella": true,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "DM",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"C",
+"D",
+"G"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona C, D, G (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "NASCOSTI",
+"par": [
+"D",
+"T"
+],
+"testo": "Tedeschi nascosti: vanno in confusione le unità US con simbolo rombo e triangolo adiacenti a rinforzi tedeschi non rivelati."
+}
+]
+},
+{
+"n": 30,
+"sbarco": {
+"D": "C",
+"T": "B",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": false,
+"stella": false,
+"carri": true
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "DM_SETTORI",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca in ciascun settore (9.2)."
+},
+{
+"da": 11,
+"a": 31,
+"cod": "EROE",
+"par": [
+29,
+0
+],
+"testo": "Piazza un Eroe su un'unità della 29a Divisione."
+}
+]
+},
+{
+"n": 31,
+"sbarco": {
+"D": "A",
+"T": "B",
+"C": "C"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": true,
+"stella": false,
+"carri": true
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "EROE",
+"par": [
+29,
+1
+],
+"testo": "Piazza un Eroe su un'unità della 29a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"B",
+"D",
+"G"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona B, D, G (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINF",
+"par": [
+"D",
+"E"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona D, E (9.3)."
+}
+]
+},
+{
+"n": 32,
+"sbarco": {
+"D": "B",
+"T": "A",
+"C": "C"
+},
+"mina": true,
+"fuoco": [
+{
+"col": "viola",
+"doppio": false,
+"stella": false,
+"carri": true
+},
+{
+"col": "blu",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": true,
+"stella": false,
+"carri": true
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "DM",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 11,
+"a": 31,
+"cod": "MEYER",
+"par": null,
+"testo": "Le riserve tedesche arrivano a Omaha: quattro unità del Kampfgruppe Meyer passano nei rinforzi divisionali (9.5)."
+}
+]
+},
+{
+"n": 33,
+"sbarco": {
+"D": "B",
+"T": "C",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "viola",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "DM",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 11,
+"a": 31,
+"cod": "RAZZI_DISTRUTTI",
+"par": null,
+"testo": "Se i razzi di WN69 hanno già sparato, il fuoco navale US li distrugge."
+}
+]
+},
+{
+"n": 34,
+"sbarco": {
+"D": "A",
+"T": "C",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "viola",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "EROE",
+"par": [
+1,
+0
+],
+"testo": "Piazza un Eroe su un'unità della 1a Divisione."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"A",
+"C",
+"E"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona A, C, E (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "TOGLI_CONF",
+"par": null,
+"testo": "Togli la confusione da tutte le posizioni tedesche."
+}
+]
+},
+{
+"n": 35,
+"sbarco": {
+"D": "C",
+"T": "A",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "viola",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": true,
+"stella": false,
+"carri": true
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "EROE",
+"par": [
+1,
+1
+],
+"testo": "Piazza un Eroe su un'unità della 1a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "NASCOSTI",
+"par": [
+"D",
+"C"
+],
+"testo": "Tedeschi nascosti: vanno in confusione le unità US con simbolo rombo e cerchio adiacenti a rinforzi tedeschi non rivelati."
+}
+]
+},
+{
+"n": 36,
+"sbarco": {
+"D": "C",
+"T": "B",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "viola",
+"doppio": true,
+"stella": false,
+"carri": true
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "DM",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "PATTUGLIA",
+"par": 29,
+"testo": "Rapporto di pattuglia US: rivela l'unità tedesca più vicina a un'unità della 29a Divisione."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "TOGLI_CONF",
+"par": null,
+"testo": "Togli la confusione da tutte le posizioni tedesche."
+}
+]
+},
+{
+"n": 37,
+"sbarco": {
+"D": "A",
+"T": "B",
+"C": "C"
+},
+"mina": true,
+"fuoco": [
+{
+"col": "viola",
+"doppio": true,
+"stella": true,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": {
+"n": 2,
+"cal": [
+"88",
+"105"
+]
+},
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "DM",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINF",
+"par": [
+"D",
+"E"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona D, E (9.3)."
+}
+]
+},
+{
+"n": 38,
+"sbarco": {
+"D": "B",
+"T": "A",
+"C": "C"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "blu",
+"doppio": true,
+"stella": false,
+"carri": true
+},
+{
+"col": "verde",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "DM_SETTORI",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca in ciascun settore (9.2)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"A",
+"C",
+"E"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona A, C, E (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "EROE",
+"par": [
+1,
+0
+],
+"testo": "Piazza un Eroe su un'unità della 1a Divisione."
+}
+]
+},
+{
+"n": 39,
+"sbarco": {
+"D": "B",
+"T": "C",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "blu",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": true
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "FUOCO_INTENSO",
+"par": null,
+"testo": "Il fuoco tedesco intenso riduce le azioni a una per Divisione in questo turno."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "NAVALE",
+"par": null,
+"testo": "Ricevi un segnalino Fuoco Navale (8.5)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "DM_SETTORI",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca in ciascun settore (9.2)."
+}
+]
+},
+{
+"n": 40,
+"sbarco": {
+"D": "A",
+"T": "C",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": true,
+"stella": false,
+"carri": true
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": {
+"n": 5,
+"cal": [
+"75",
+"88",
+"105"
+]
+},
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "DM",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINF",
+"par": [
+"E",
+"F"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona E, F (9.3)."
+}
+]
+},
+{
+"n": 41,
+"sbarco": {
+"D": "C",
+"T": "A",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "rosso",
+"doppio": true,
+"stella": false,
+"carri": true
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "EROE",
+"par": [
+29,
+1
+],
+"testo": "Piazza un Eroe su un'unità della 29a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "TOGLI_CONF",
+"par": null,
+"testo": "Togli la confusione da tutte le posizioni tedesche."
+}
+]
+},
+{
+"n": 42,
+"sbarco": {
+"D": "C",
+"T": "B",
+"C": "A"
+},
+"mina": true,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": false,
+"stella": false,
+"carri": true
+}
+],
+"bersaglio": "D",
+"art": {
+"n": 1,
+"cal": [
+"88"
+]
+},
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "EROE",
+"par": [
+29,
+1
+],
+"testo": "Piazza un Eroe su un'unità della 29a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 11,
+"a": 31,
+"cod": "DM_SETTORI",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca in ciascun settore (9.2)."
+}
+]
+},
+{
+"n": 43,
+"sbarco": {
+"D": "A",
+"T": "B",
+"C": "C"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "DM",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "TOGLI_CONF",
+"par": null,
+"testo": "Togli la confusione da tutte le posizioni tedesche."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINF",
+"par": [
+"A",
+"F"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona A, F (9.3)."
+}
+]
+},
+{
+"n": 44,
+"sbarco": {
+"D": "B",
+"T": "A",
+"C": "C"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "D",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "DM",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "NASCOSTI",
+"par": [
+"C",
+"T"
+],
+"testo": "Tedeschi nascosti: vanno in confusione le unità US con simbolo cerchio e triangolo adiacenti a rinforzi tedeschi non rivelati."
+}
+]
+},
+{
+"n": 45,
+"sbarco": {
+"D": "B",
+"T": "C",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": true
+},
+{
+"col": "rosso",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": {
+"n": 2,
+"cal": [
+"88"
+]
+},
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "FUOCO_INTENSO",
+"par": null,
+"testo": "Il fuoco tedesco intenso riduce le azioni a una per Divisione in questo turno."
+},
+{
+"da": 11,
+"a": 31,
+"cod": "RINF",
+"par": [
+"C",
+"E",
+"F"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona C, E, F (9.3)."
+}
+]
+},
+{
+"n": 46,
+"sbarco": {
+"D": "A",
+"T": "C",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": {
+"n": 4,
+"cal": [
+"75",
+"88",
+"105"
+]
+},
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "RINF",
+"par": [
+"A",
+"G"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona A, G (9.3)."
+},
+{
+"da": 11,
+"a": 31,
+"cod": "DM_SETTORI",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca in ciascun settore (9.2)."
+}
+]
+},
+{
+"n": 47,
+"sbarco": {
+"D": "C",
+"T": "A",
+"C": "B"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": true,
+"stella": false,
+"carri": true
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "C",
+"art": {
+"n": 3,
+"cal": [
+"75",
+"88",
+"105"
+]
+},
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "RINF",
+"par": [
+"D"
+],
+"testo": "Un rinforzo tedesco nella zona D (9.3)."
+},
+{
+"da": 11,
+"a": 31,
+"cod": "DM_SETTORI",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca in ciascun settore (9.2)."
+}
+]
+},
+{
+"n": 48,
+"sbarco": {
+"D": "C",
+"T": "B",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": false,
+"carri": true
+}
+],
+"bersaglio": "C",
+"art": {
+"n": 5,
+"cal": [
+"75",
+"88",
+"105"
+]
+},
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "EROE",
+"par": [
+1,
+1
+],
+"testo": "Piazza un Eroe su un'unità della 1a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 11,
+"a": 31,
+"cod": "DM_SETTORI",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca in ciascun settore (9.2)."
+}
+]
+},
+{
+"n": 49,
+"sbarco": {
+"D": "A",
+"T": "B",
+"C": "C"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": false,
+"stella": false,
+"carri": true
+}
+],
+"bersaglio": "C",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "EROE",
+"par": [
+29,
+1
+],
+"testo": "Piazza un Eroe su un'unità della 29a Divisione e aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "PATTUGLIA",
+"par": 1,
+"testo": "Rapporto di pattuglia US: rivela l'unità tedesca più vicina a un'unità della 1a Divisione."
+}
+]
+},
+{
+"n": 50,
+"sbarco": {
+"D": "B",
+"T": "A",
+"C": "C"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "viola",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "blu",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "DM",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca (9.2)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "MEYER",
+"par": null,
+"testo": "Le riserve tedesche arrivano a Omaha: quattro unità del Kampfgruppe Meyer passano nei rinforzi divisionali (9.5)."
+}
+]
+},
+{
+"n": 51,
+"sbarco": {
+"D": "B",
+"T": "C",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "arancio",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "rosso",
+"doppio": true,
+"stella": false,
+"carri": true
+},
+{
+"col": "marrone",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "RINF",
+"par": [
+"A",
+"D"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona A, D (9.3)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"A",
+"E",
+"G"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona A, E, G (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "DM_SETTORI",
+"par": null,
+"testo": "Aggiungi un segnalino Incognita a un'unità tedesca in ciascun settore (9.2)."
+}
+]
+},
+{
+"n": 52,
+"sbarco": {
+"D": "A",
+"T": "C",
+"C": "B"
+},
+"mina": true,
+"fuoco": [
+{
+"col": "rosso",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "viola",
+"doppio": true,
+"stella": false,
+"carri": true
+},
+{
+"col": "blu",
+"doppio": false,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 20,
+"cod": "RINF",
+"par": [
+"E"
+],
+"testo": "Un rinforzo tedesco nella zona E (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "NAVALE_INATTESO",
+"par": {
+"D": "WN72",
+"T": "G3",
+"C": "WN67"
+},
+"testo": "Fuoco navale US inatteso colpisce una posizione: rombo WN72, triangolo G3, cerchio WN67."
+}
+]
+},
+{
+"n": 53,
+"sbarco": {
+"D": "C",
+"T": "A",
+"C": "B"
+},
+"mina": true,
+"fuoco": [
+{
+"col": "blu",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": false,
+"stella": false,
+"carri": true
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": false,
+"carri": false
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "RINF",
+"par": [
+"A",
+"E"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona A, E (9.3)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "PRIGIONIERO",
+"par": 1,
+"testo": "Un prigioniero tedesco parla: rivela un'unità tedesca a scelta nel settore della 1a Divisione."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "RINF",
+"par": [
+"D"
+],
+"testo": "Un rinforzo tedesco nella zona D (9.3)."
+}
+]
+},
+{
+"n": 54,
+"sbarco": {
+"D": "C",
+"T": "B",
+"C": "A"
+},
+"mina": false,
+"fuoco": [
+{
+"col": "viola",
+"doppio": false,
+"stella": false,
+"carri": false
+},
+{
+"col": "verde",
+"doppio": true,
+"stella": false,
+"carri": false
+},
+{
+"col": "marrone",
+"doppio": true,
+"stella": false,
+"carri": true
+}
+],
+"bersaglio": "T",
+"art": null,
+"eventi": [
+{
+"da": 2,
+"a": 10,
+"cod": "RINF",
+"par": [
+"D",
+"G"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona D, G (9.3)."
+},
+{
+"da": 11,
+"a": 20,
+"cod": "RINF",
+"par": [
+"C",
+"D",
+"E"
+],
+"testo": "Rinforzi tedeschi: uno in ciascuna zona C, D, E (9.3)."
+},
+{
+"da": 21,
+"a": 31,
+"cod": "PRIGIONIERO",
+"par": 29,
+"testo": "Un prigioniero tedesco parla: rivela un'unità tedesca a scelta nel settore della 29a Divisione."
+}
+]
+}
+]
