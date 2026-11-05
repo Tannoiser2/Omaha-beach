@@ -12,19 +12,22 @@
 "col": "arancio",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "F"
 },
 {
 "col": "rosso",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "viola",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "D",
@@ -73,19 +76,22 @@
 "col": "arancio",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "rosso",
 "doppio": false,
 "stella": true,
-"carri": false
+"carri": false,
+"az": "F"
 },
 {
 "col": "viola",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "C",
@@ -131,19 +137,22 @@
 "col": "arancio",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "rosso",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 },
 {
 "col": "blu",
 "doppio": false,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 }
 ],
 "bersaglio": "T",
@@ -192,19 +201,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "rosso",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "blu",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "C",
@@ -248,19 +260,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": true,
-"carri": false
+"carri": false,
+"az": "F"
 },
 {
 "col": "rosso",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "verde",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 }
 ],
 "bersaglio": "D",
@@ -302,19 +317,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 },
 {
 "col": "rosso",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "verde",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "T",
@@ -357,19 +375,22 @@
 "col": "arancio",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "rosso",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": true,
-"carri": false
+"carri": false,
+"az": "F"
 }
 ],
 "bersaglio": "T",
@@ -411,19 +432,22 @@
 "col": "arancio",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 },
 {
 "col": "rosso",
 "doppio": false,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "marrone",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "C",
@@ -462,19 +486,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "viola",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "blu",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 }
 ],
 "bersaglio": "D",
@@ -526,19 +553,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "viola",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "blu",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "T",
@@ -585,19 +615,22 @@
 "col": "arancio",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 },
 {
 "col": "viola",
 "doppio": false,
 "stella": true,
-"carri": false
+"carri": false,
+"az": "F"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "T",
@@ -649,19 +682,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "viola",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 },
 {
 "col": "verde",
 "doppio": true,
 "stella": true,
-"carri": false
+"carri": false,
+"az": "F"
 }
 ],
 "bersaglio": "C",
@@ -709,19 +745,22 @@
 "col": "arancio",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "viola",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "marrone",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 }
 ],
 "bersaglio": "D",
@@ -774,19 +813,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "blu",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "F"
 },
 {
 "col": "verde",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 }
 ],
 "bersaglio": "T",
@@ -829,19 +871,22 @@
 "col": "arancio",
 "doppio": true,
 "stella": true,
-"carri": false
+"carri": false,
+"az": "F"
 },
 {
 "col": "blu",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 }
 ],
 "bersaglio": "C",
@@ -890,19 +935,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "blu",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 }
 ],
 "bersaglio": "D",
@@ -940,19 +988,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "blu",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 }
 ],
 "bersaglio": "C",
@@ -994,19 +1045,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 }
 ],
 "bersaglio": "T",
@@ -1041,19 +1095,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": true,
-"carri": false
+"carri": false,
+"az": "F"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "F"
 }
 ],
 "bersaglio": "D",
@@ -1105,19 +1162,22 @@
 "col": "rosso",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "viola",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 },
 {
 "col": "blu",
 "doppio": true,
 "stella": true,
-"carri": false
+"carri": false,
+"az": "F"
 }
 ],
 "bersaglio": "D",
@@ -1156,19 +1216,22 @@
 "col": "rosso",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "viola",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "blu",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 }
 ],
 "bersaglio": "C",
@@ -1206,19 +1269,22 @@
 "col": "rosso",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "viola",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 }
 ],
 "bersaglio": "D",
@@ -1256,19 +1322,22 @@
 "col": "rosso",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "viola",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "F"
 },
 {
 "col": "marrone",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 }
 ],
 "bersaglio": "T",
@@ -1310,19 +1379,22 @@
 "col": "rosso",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "viola",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "verde",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 }
 ],
 "bersaglio": "T",
@@ -1371,19 +1443,22 @@
 "col": "rosso",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "F"
 },
 {
 "col": "blu",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "verde",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "F"
 }
 ],
 "bersaglio": "C",
@@ -1431,19 +1506,22 @@
 "col": "rosso",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "viola",
 "doppio": false,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "C",
@@ -1489,19 +1567,22 @@
 "col": "rosso",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "blu",
 "doppio": false,
 "stella": true,
-"carri": false
+"carri": false,
+"az": "F"
 },
 {
 "col": "verde",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 }
 ],
 "bersaglio": "T",
@@ -1536,19 +1617,22 @@
 "col": "rosso",
 "doppio": false,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "blu",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "marrone",
 "doppio": false,
 "stella": true,
-"carri": false
+"carri": false,
+"az": "F"
 }
 ],
 "bersaglio": "D",
@@ -1589,19 +1673,22 @@
 "col": "rosso",
 "doppio": true,
 "stella": true,
-"carri": false
+"carri": false,
+"az": "F"
 },
 {
 "col": "blu",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "marrone",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "T",
@@ -1650,19 +1737,22 @@
 "col": "rosso",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "verde",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "marrone",
 "doppio": false,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 }
 ],
 "bersaglio": "D",
@@ -1700,19 +1790,22 @@
 "col": "rosso",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "verde",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 }
 ],
 "bersaglio": "C",
@@ -1764,19 +1857,22 @@
 "col": "viola",
 "doppio": false,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "blu",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "verde",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 }
 ],
 "bersaglio": "D",
@@ -1811,19 +1907,22 @@
 "col": "viola",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "blu",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 }
 ],
 "bersaglio": "C",
@@ -1858,19 +1957,22 @@
 "col": "viola",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "blu",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "marrone",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "D",
@@ -1919,19 +2021,22 @@
 "col": "viola",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "blu",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 }
 ],
 "bersaglio": "T",
@@ -1972,19 +2077,22 @@
 "col": "viola",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 }
 ],
 "bersaglio": "T",
@@ -2026,19 +2134,22 @@
 "col": "viola",
 "doppio": true,
 "stella": true,
-"carri": false
+"carri": false,
+"az": "F"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "marrone",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "C",
@@ -2082,19 +2193,22 @@
 "col": "blu",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "verde",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "marrone",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 }
 ],
 "bersaglio": "D",
@@ -2143,19 +2257,22 @@
 "col": "blu",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "C",
@@ -2197,19 +2314,22 @@
 "col": "arancio",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "marrone",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 }
 ],
 "bersaglio": "D",
@@ -2254,19 +2374,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "rosso",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "D",
@@ -2304,19 +2427,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "viola",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "blu",
 "doppio": false,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 }
 ],
 "bersaglio": "D",
@@ -2359,19 +2485,22 @@
 "col": "rosso",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "viola",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "blu",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 }
 ],
 "bersaglio": "D",
@@ -2416,19 +2545,22 @@
 "col": "rosso",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "marrone",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 }
 ],
 "bersaglio": "D",
@@ -2466,19 +2598,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "rosso",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "viola",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 }
 ],
 "bersaglio": "C",
@@ -2522,19 +2657,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "viola",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 }
 ],
 "bersaglio": "C",
@@ -2579,19 +2717,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "blu",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 }
 ],
 "bersaglio": "C",
@@ -2635,19 +2776,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "blu",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 }
 ],
 "bersaglio": "C",
@@ -2692,19 +2836,22 @@
 "col": "rosso",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 },
 {
 "col": "viola",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "marrone",
 "doppio": false,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 }
 ],
 "bersaglio": "C",
@@ -2742,19 +2889,22 @@
 "col": "viola",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 },
 {
 "col": "blu",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "T",
@@ -2789,19 +2939,22 @@
 "col": "arancio",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 },
 {
 "col": "rosso",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "marrone",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 }
 ],
 "bersaglio": "T",
@@ -2850,19 +3003,22 @@
 "col": "rosso",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "viola",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "blu",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "M"
 }
 ],
 "bersaglio": "T",
@@ -2903,19 +3059,22 @@
 "col": "blu",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "P"
 },
 {
 "col": "verde",
 "doppio": false,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 }
 ],
 "bersaglio": "T",
@@ -2962,19 +3121,22 @@
 "col": "viola",
 "doppio": false,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "R"
 },
 {
 "col": "verde",
 "doppio": true,
 "stella": false,
-"carri": false
+"carri": false,
+"az": "A"
 },
 {
 "col": "marrone",
 "doppio": true,
 "stella": false,
-"carri": true
+"carri": true,
+"az": "F"
 }
 ],
 "bersaglio": "T",

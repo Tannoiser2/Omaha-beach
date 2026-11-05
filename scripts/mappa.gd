@@ -5,7 +5,9 @@ class_name Mappa
 extends RefCounted
 
 var esagoni: Dictionary = {}      # "0513" -> {t, s, ost, cio, ed, uscita}
-var lati: Dictionary = {}         # "0513|0613" -> "B" (duna), "L" (pendio), "C" (scogliera scalabile), "X" (a picco), "W" (muro/fosso)
+var lati: Dictionary = {}         # "0513|0613" -> "B" duna, "L" pendio, "C" scogliera scalabile, "X" a picco, "W" muro o fosso anticarro, "A" argine, "G" ciottoli
+var strade: Dictionary = {}       # "0830|0831" -> "P" principale, "S" secondaria o sentiero, "M" strada minata
+var minati: Dictionary = {}       # esagoni con una strada minata
 var posizioni: Dictionary = {}    # id -> {id, tipo, col, hex[], zona, prio, ed, art, gruppo}
 var fuoco: Dictionary = {}        # id posizione (o gruppo WN) -> {hex: livello 3 intenso, 2 costante, 1 sporadico}
 var box: Dictionary = {}          # "ER1" -> {box, div, s, bassa, media, alta}
@@ -26,6 +28,10 @@ func carica(percorso := "res://data/mappa.json") -> void:
 	var d: Dictionary = JSON.parse_string(f.get_as_text())
 	esagoni = d["hexes"]
 	lati = d["sides"]
+	strade = d.get("strade", {})
+	for k in strade:
+		if strade[k] == "M":
+			for h in k.split("|"): minati[h] = true
 	posizioni = d["pos"]
 	fuoco = d["fire"]
 	box = d["boxes"]
@@ -43,10 +49,10 @@ func carica(percorso := "res://data/mappa.json") -> void:
 	for h in esagoni:
 		if esagoni[h]["t"] != "spiaggia":
 			continue
-		var ok: bool = esagoni[h].get("cio", 0) == 1
+		var ok := false
 		for v in vicini(h):
 			var l := lato(h, v)
-			if l in ["B", "L", "C", "W"] or esagoni[v]["t"] in ["pianoro", "altura", "bocage", "bosco", "accidentato"]:
+			if l in ["B", "L", "C", "W", "A", "G"] or esagoni[v]["t"] in ["pianoro", "altura", "bocage", "bosco", "accidentato"]:
 				ok = true
 		if ok:
 			protezione[h] = true
@@ -88,6 +94,15 @@ static func distanza(a: String, b: String) -> int:
 func lato(a: String, b: String) -> String:
 	var k := a + "|" + b if a < b else b + "|" + a
 	return lati.get(k, "")
+
+func strada(a: String, b: String) -> String:
+	var k := a + "|" + b if a < b else b + "|" + a
+	return strade.get(k, "")
+
+func ha_strada(h: String, tipi := ["P", "S"]) -> bool:
+	for v in vicini(h):
+		if strada(h, v) in tipi: return true
+	return false
 
 func terreno(h: String) -> String:
 	return esagoni[h]["t"] if esagoni.has(h) else ""

@@ -39,6 +39,7 @@ var btn_fine: Button
 var btn_navale: Button
 var chk_pila: CheckBox
 var chk_campi: CheckBox
+var riga_genio: HBoxContainer
 var menu: Control
 var finestra: Control
 
@@ -176,6 +177,10 @@ func _costruisci_ui() -> void:
 	riga.add_child(btn_fine)
 	riga.add_child(_bottone("Gioca il turno per me", _turno_automatico))
 	v.add_child(riga)
+	riga_genio = HBoxContainer.new()
+	riga_genio.add_child(_bottone("Base del Genio 1ª", func(): _modo("base1")))
+	riga_genio.add_child(_bottone("Base del Genio 29ª", func(): _modo("base29")))
+	v.add_child(riga_genio)
 	var riga2 = HBoxContainer.new()
 	btn_navale = _bottone("Fuoco navale", func(): _modo("navale"))
 	riga2.add_child(btn_navale)
@@ -278,6 +283,8 @@ func _mini_carta(c: CanvasItem, p: Vector2, n: int, titolo: String) -> void:
 			draw_stella(c, cc, 9.0, Color.WHITE)
 		elif q["carri"]:
 			c.draw_rect(Rect2(cc - Vector2(9, 4), Vector2(18, 8)), Color.WHITE, false, 2.0)
+		elif g.estesa() and q.get("az", "F") != "F":
+			c.draw_string(f_titoli, cc + Vector2(-8, 8), q["az"], HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color.WHITE)
 		qx += 44
 	draw_simbolo(c, p + Vector2(qx + 16, 78), 12.0, d["bersaglio"], Color(0.08, 0.08, 0.1))
 	if d["art"] != null:
@@ -343,6 +350,23 @@ func disegna(c: CanvasItem) -> void:
 			_riempi(c, h, Color(col.r, col.g, col.b, a))
 		for h in m.posizioni[hover_pid]["hex"]:
 			_bordo(c, h, col, 5.0)
+	# area e basi del Genio, guarnigioni
+	if g.estesa():
+		var area = g.area_genio()
+		for h in area:
+			_riempi(c, h, Color(1.0, 0.85, 0.2, 0.10))
+		for b in g.s["basi"]:
+			var cb = m.centro(b["hex"]) + Vector2(0, 30)
+			c.draw_circle(cb, 22, Color(0.75, 0.6, 0.1))
+			c.draw_arc(cb, 22, 0, TAU, 24, Color.BLACK, 2.0)
+			c.draw_string(f_titoli, cb + Vector2(-19, 6), "GENIO", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.BLACK)
+			c.draw_string(f_testo, cb + Vector2(-5, 20), str(g.raggio_base(b)), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.BLACK)
+		for pid in g.s["guarnigioni"]:
+			if g.occupata(pid): continue
+			var cg = m.centro(m.posizioni[pid]["hex"][0]) + Vector2(26, -30)
+			c.draw_rect(Rect2(cg - Vector2(16, 11), Vector2(32, 22)), Color(0.15, 0.4, 0.2))
+			c.draw_rect(Rect2(cg - Vector2(16, 11), Vector2(32, 22)), Color.WHITE, false, 1.5)
+			c.draw_string(f_titoli, cg + Vector2(-12, 6), "GUA", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color.WHITE)
 	# ostacoli bonificati
 	for h in g.s["bonificati"]:
 		var t = _t("bonificato")
@@ -355,7 +379,7 @@ func disegna(c: CanvasItem) -> void:
 	if not sel.is_empty() and sel["dove"] == "mappa" and modo == "":
 		var mm = g.mosse(sel)
 		for h in mm:
-			var col2 = {"muovi": Color(0.2, 0.9, 0.3, 0.35), "autocons": Color(0.2, 0.75, 0.95, 0.4), "duna": Color(1.0, 0.65, 0.1, 0.4), "scogliera": Color(1.0, 0.3, 0.1, 0.4), "fine_scogliera": Color(1.0, 0.3, 0.1, 0.4)}[mm[h]]
+			var col2 = {"muovi": Color(0.2, 0.9, 0.3, 0.35), "autocons": Color(0.2, 0.75, 0.95, 0.4), "strada": Color(0.2, 0.9, 0.3, 0.35), "duna": Color(1.0, 0.65, 0.1, 0.4), "scogliera": Color(1.0, 0.3, 0.1, 0.4), "fine_scogliera": Color(1.0, 0.3, 0.1, 0.4)}[mm[h]]
 			_riempi(c, h, col2)
 	if hover != "" and m.esagoni.has(hover):
 		_bordo(c, hover, Color(1, 1, 0.6, 0.8), 2.0)
@@ -438,6 +462,9 @@ func _pedina(c: CanvasItem, u: Dictionary, r: Rect2) -> void:
 		if te: c.draw_texture_rect(te, Rect2(r.position + Vector2(r.size.x - s * 0.7, r.size.y - s * 0.7), Vector2(s, s)), false)
 	if u["cmd"] != u["div"]:
 		c.draw_circle(r.position + Vector2(4, 4), 4.0, Color(0.1, 0.4, 0.9))
+	if g.s.get("cp", {}).has(u["id"]):
+		c.draw_rect(Rect2(r.position + Vector2(0, r.size.y - 12), Vector2(22, 12)), Color(0.8, 0.1, 0.1))
+		c.draw_string(f_titoli, r.position + Vector2(2, r.size.y - 2), "CP", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color.WHITE)
 
 # ================================================================ input sulla mappa
 func _unhandled_input(ev: InputEvent) -> void:
@@ -522,8 +549,12 @@ func _modo(m: String) -> void:
 			if m == "attacco" and g.attaccabile(h) and g.candidati_attacco(h).any(func(x): return g.fanteria(x) and Mappa.distanza(x["hex"], h) == 1): bersagli[h] = true
 			if m == "sbarramento" and not sel.is_empty() and g.puo_sbarrare(sel, h) == "": bersagli[h] = true
 			if m == "navale" and g.puo_navale(h) == "": bersagli[h] = true
+	if m.begins_with("base"):
+		var div = int(m.substr(4))
+		for h in g.mappa.esagoni:
+			if g.puo_base(h, div) == "": bersagli[h] = true
 	if bersagli.is_empty():
-		_avviso({"attacco": "Nessuna posizione tedesca può essere attaccata ora: serve una fanteria adiacente che non abbia ancora agito.", "sbarramento": "Questo carro non ha bersagli per il fuoco di sbarramento.", "navale": "Nessun bersaglio per il fuoco navale: serve una fanteria con radio nel campo di fuoco della posizione."}[m])
+		_avviso({"attacco": "Nessuna posizione tedesca può essere attaccata ora: serve una fanteria adiacente che non abbia ancora agito.", "sbarramento": "Questo carro non ha bersagli per il fuoco di sbarramento.", "navale": "Nessun bersaglio per il fuoco navale: serve una fanteria con radio nel campo di fuoco della posizione.", "base1": "Nessun esagono di spiaggia adatto per una Base del Genio della 1ª Divisione: " + g.puo_base("0000", 1), "base29": "Nessun esagono di spiaggia adatto per una Base del Genio della 29ª Divisione."}.get(m, "Nessun bersaglio."))
 		modo = ""
 	tavolo.queue_redraw()
 	_aggiorna()
@@ -538,6 +569,7 @@ func _click(p: Vector2) -> void:
 			if m == "attacco": _finestra_attacco(h)
 			elif m == "sbarramento": _referto(g.sbarramento(sel, h))
 			elif m == "navale": _referto(g.navale(h))
+			elif m.begins_with("base"): g.stabilisci_base(h, int(m.substr(4)))
 		else:
 			_annulla()
 		_dopo_azione()
@@ -590,13 +622,19 @@ func _aggiorna() -> void:
 	lbl_fase.text = "%s - %s - %s.  Fuoco navale: %d." % [g.nome_scenario(), g.nome_marea(), fasi.get(g.s["fase"], g.s["fase"]), g.s["navali"]]
 	var perd: Dictionary = g.s["perdite"]
 	if g.easy():
-		lbl_azioni.text = "Azioni 1ª Divisione: %d   |   Perdite fanteria: %d/8" % [g.s["azioni"]["1"], perd["1"].size()]
+		lbl_azioni.text = "Azioni 1ª Divisione: %d   |   Perdite fanteria: %d/%d" % [g.s["azioni"]["1"], perd["1"].size(), 14 if g.estesa() else 8]
 	else:
-		lbl_azioni.text = "Azioni: 1ª Div %d, 29ª Div %d   |   Perdite fanteria: 1ª %d/8, 29ª %d/8" % [g.s["azioni"]["1"], g.s["azioni"]["29"], perd["1"].size(), perd["29"].size()]
+		var lim = 14 if g.estesa() else 8
+		lbl_azioni.text = "Azioni: 1ª Div %d, 29ª Div %d   |   Perdite fanteria: 1ª %d/%d, 29ª %d/%d" % [g.s["azioni"]["1"], g.s["azioni"]["29"], perd["1"].size(), lim, perd["29"].size(), lim]
 	var pv = g.punti_vittoria()
 	var pool: Dictionary = g.s["pool"]
-	lbl_azioni.text += "\nPunti Vittoria ora: %d su %d (WN %d, rinforzi %d, valli %d)\nRiserve tedesche: rinforzi tattici %d, divisionali %d; segnalini Incognita WN %d, mobili %d, edifici %d" % [pv["totale"], pv["soglia"], pv["wn"], pv["rinforzi"], pv["valli"], pool["T"].size(), pool["D"].size(), pool["wn"].size(), pool["mobile"].size(), pool["edificio"].size()]
+	if pv["estesa"]:
+		lbl_azioni.text += "\nPunti Vittoria ora: %d (vittoria da %d): posizioni %d, valli %d, alture %d, usciti %d, WN -%d, Meyer -%d" % [pv["totale"], pv["soglia"], pv["rinforzi"], pv["valli"], pv["alture"], pv["usciti"], pv["wn_meno"], pv["meyer"]]
+	else:
+		lbl_azioni.text += "\nPunti Vittoria ora: %d su %d (WN %d, rinforzi %d, valli %d)" % [pv["totale"], pv["soglia"], pv["wn"], pv["rinforzi"], pv["valli"]]
+	lbl_azioni.text += "\nRiserve tedesche: rinforzi tattici %d, divisionali %d; segnalini Incognita WN %d, mobili %d, edifici %d" % [pool["T"].size(), pool["D"].size(), pool["wn"].size(), pool["mobile"].size(), pool["edificio"].size()]
 	btn_fine.disabled = g.s["fase"] != "azioni"
+	riga_genio.visible = g.estesa() and g.s["fase"] == "azioni"
 	btn_navale.disabled = g.s["fase"] != "azioni" or g.s["navali"] <= 0
 	btn_navale.text = "Fuoco navale (%d)" % g.s["navali"]
 	var ev = ""
@@ -608,7 +646,7 @@ func _aggiorna() -> void:
 	vista_carte.queue_redraw()
 	_pulisci(box_unita)
 	if modo != "":
-		box_unita.add_child(_label({"attacco": "Scegli la posizione tedesca da attaccare (in rosso). Clic destro per annullare.", "sbarramento": "Scegli la posizione su cui sparare (in rosso).", "navale": "Scegli la posizione da colpire con il fuoco navale (in rosso)."}[modo], 16, null, Color(1, 0.75, 0.6)))
+		box_unita.add_child(_label({"attacco": "Scegli la posizione tedesca da attaccare (in rosso). Clic destro per annullare.", "sbarramento": "Scegli la posizione su cui sparare (in rosso).", "navale": "Scegli la posizione da colpire con il fuoco navale (in rosso).", "base1": "Scegli l'esagono di spiaggia per la Base del Genio (in rosso).", "base29": "Scegli l'esagono di spiaggia per la Base del Genio (in rosso)."}.get(modo, ""), 16, null, Color(1, 0.75, 0.6)))
 		return
 	if sel.is_empty():
 		box_unita.add_child(_label("Clicca un'unità per selezionarla (clic ripetuti sullo stesso esagono passano all'unità successiva). Trascina per spostare la mappa, rotellina per lo zoom.", 15, null, C_KAKI))
@@ -668,8 +706,15 @@ func _aggiorna() -> void:
 			var rb = HBoxContainer.new()
 			if not g.leader(u):
 				rb.add_child(_bottone("Attacca", func(): _modo("attacco")))
-			if g.tipo(u) == "carro":
+			if g.tipo(u) == "carro" or (g.estesa() and g.tipo(u) in ["artiglieria", "artiglieria_sp"]):
 				rb.add_child(_bottone("Fuoco di sbarramento", func(): _modo("sbarramento")))
+			if g.puo_uscire(u):
+				rb.add_child(_bottone("Esci dalla mappa", func(): g.esci(u); _dopo_azione()))
+			if g.tipo(u) == "hq" and g.estesa():
+				if g.s["cp"].has(u["id"]):
+					r.add_child(_label("Posto di Comando, raggio %d. Muovendolo torna HQ." % g.raggio_cp(u["id"]), 14, null, C_KAKI))
+				elif g.puo_cp(u) == "":
+					rb.add_child(_bottone("Posto di Comando", func(): g.stabilisci_cp(u); _dopo_azione()))
 			r.add_child(rb)
 			if g.mosse(u).is_empty():
 				r.add_child(_label("Nessun movimento possibile" + ("" if g.puo_agire(u) else ": la Divisione ha finito le azioni") + ".", 14))
@@ -891,6 +936,8 @@ func _mostra_menu() -> void:
 	v.add_child(HSeparator.new())
 	v.add_child(_bottone("Easy Fox - scenario introduttivo (solo settore Est, 1ª Divisione)", func(): _nuova("easy_fox")))
 	v.add_child(_bottone("La prima ondata - turni 1-16, tutta la spiaggia", func(): _nuova("prima_ondata")))
+	v.add_child(_bottone("D-Day at Omaha Beach - turni 1-32, la giornata intera", func(): _nuova("dday")))
+	v.add_child(_bottone("Oltre la spiaggia - turni 17-32, dalle 10:00 verso l'entroterra", func(): _nuova("oltre")))
 	if FileAccess.file_exists(SALVATAGGIO):
 		v.add_child(_bottone("Continua la partita salvata su questo dispositivo", _carica_locale))
 	if not g.s.is_empty() and g.s["fine"] == "":
@@ -989,6 +1036,8 @@ Movimento: un esagono. La fanteria supera le dune con una scalata (arancio) che 
 Attacco: serve almeno una fanteria adiacente; si sommano le forze e le armi. Se hai tutte le armi richieste dall'unità tedesca e dal suo segnalino Incognita usi la parte alta della tabella, altrimenti quella bassa. L'Eroe sostituisce un'arma o aggiunge 1 alla forza. Il fuoco navale aggiunge 9 e le armi AR, DE, NA. Aggiramento (FL): attacca da due esagoni non adiacenti tra loro.
 
 Alla marea media (turno 7) le unità rimaste sulla linea di bassa marea annegano; idem per la linea media all'alta marea. Più di due unità per esagono a fine fase: le eccedenti sono eliminate.
+
+Dal turno 17 (scenari D-Day e Oltre la spiaggia) vale la modalità estesa: due eventi per turno, tre azioni per Divisione, la fanteria e i leader si muovono di due esagoni (uno solo entrando nel bocage senza strada o sotto fuoco intenso o costante), i carri corrono lungo le strade (4 esagoni sulle principali, 2 sulle secondarie), l'artiglieria fa fuoco di sbarramento con un HQ. Le lettere sulle carte fuoco fanno compiere ai tedeschi le loro azioni: F fuoco, R rioccupazione/rifornimento/reimpiego/rinforzo, M mortai, P pattuglia, A avanzata/imboscata/artiglieria. Gli HQ fuori dal fuoco diventano Posti di Comando con raggio crescente; le Basi del Genio sulla spiaggia aprono ciottoli, fossi, muri e strade minate, permettono il movimento gratuito dalla spiaggia e piazzano guarnigioni nelle posizioni vuote. La sconfitta catastrofica arriva a 14 compagnie perse. Al turno 32 contano le posizioni VP, le valli aperte (4), i mezzi sulle alture, i punti usciti dalla mappa dalle uscite A-G, meno le WN non controllate e il Kampfgruppe Meyer non impiegato: servono 40 punti (45 in Oltre la spiaggia). Nello scenario D-Day al turno 16 si vince subito con 25 punti e si perde con 10 o meno.
 
 Vittoria: al turno 16 conta 1 punto per ogni esagono WN controllato, 1 per ogni posizione di rinforzo, 5 per ogni valle (draw). Servono 19 punti (9 in Easy Fox). Perdi subito se otto compagnie di fanteria di una Divisione sono ridotte a un punto o eliminate.
 

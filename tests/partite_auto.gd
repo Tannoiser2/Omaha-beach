@@ -3,8 +3,8 @@ extends SceneTree
 
 func _init() -> void:
 	var risultati := []
-	for scen in ["easy_fox", "prima_ondata"]:
-		for seme in [11, 22, 33, 44, 55]:
+	for scen in (OS.get_environment("SCENARI").split(",") if OS.get_environment("SCENARI") != "" else ["easy_fox", "prima_ondata", "dday", "oltre"]):
+		for seme in [11, 22, 33]:
 			var p := Partita.new()
 			p.nuova(scen, seme)
 			var bot := Bot.new(p)

@@ -8,7 +8,7 @@ func _initialize() -> void:
 func _process(_d: float) -> bool:
 	n += 1
 	if n == 3:
-		main._nuova("prima_ondata")
+		main._nuova(OS.get_environment("SCEN") if OS.get_environment("SCEN") != "" else "prima_ondata")
 		var g = main.g
 		g.s["navali"] = 3
 		for t in 12:

@@ -67,44 +67,123 @@ func sommerso(h: String) -> bool:
 	if m == "alta" and (mappa.bassa_set.has(h) or mappa.media_set.has(h)): return true
 	return false
 
-## Esagoni raggiungibili: hex -> "muovi" | "autocons" | "duna" | "scogliera"
+var percorsi := {}
+var mossa_gratis := false
+
+## Un passo di un esagono: restituisce "muovi", "duna", "scogliera" oppure "" se vietato.
+func passo_ok(u: Dictionary, h: String, v: String, area: Dictionary) -> String:
+	if tedesco_in(v) or sommerso(v) or not mappa.esagoni.has(v): return ""
+	var t = mappa.terreno(v)
+	var l = mappa.lato(h, v)
+	var tp = tipo(u)
+	if t == "accidentato" or l == "X": return ""
+	if tp == "generale":
+		return "muovi"
+	if tp == "hq":
+		return "" if l == "C" else "muovi"
+	if fanteria(u):
+		if l == "B": return "duna"
+		if l == "C": return "scogliera"
+		return "muovi"
+	# carri, artiglieria, contraerea, anticarro (diagramma del terreno)
+	var genio = area.has(h) or area.has(v)
+	var st = mappa.strada(h, v)
+	if st == "M" and not genio: st = ""
+	if mappa.minati.has(v) and not area.has(v): return ""
+	if st != "": return "muovi"
+	if l == "C": return ""
+	if t in ["bosco", "bocage"]: return ""
+	if l in ["B", "L", "A"]: return ""
+	if l in ["G", "W"] and not genio: return ""
+	return "muovi"
+
+func _fuoco_forte(h: String) -> bool:
+	for pid in pos_attive():
+		if s["de"][pid]["conf"]: continue
+		var c = mappa.campo(pid)
+		if c.has(h) and int(c[h]) >= 2: return true
+	return false
+
+func _fuoco_intenso(h: String) -> bool:
+	for pid in pos_attive():
+		var c = mappa.campo(pid)
+		if c.has(h) and int(c[h]) == 3: return true
+	return false
+
+## Esagoni raggiungibili: hex -> "muovi" | "autocons" | "duna" | "scogliera" | "fine_scogliera" | "strada"
 func mosse(u: Dictionary) -> Dictionary:
 	var o = {}
+	percorsi = {}
+	mossa_gratis = false
 	var solo_auto = false
 	if u["dove"] == "mappa" and not u["agito"] and s["fase"] == "azioni" and not puo_agire(u) and fanteria(u) and u["conf"] == 0 and u["scalata"] == "":
 		solo_auto = true
-	if (not puo_agire(u) and not solo_auto) or u["conf"] > 0 or u["scalata"] != "":
+	var h: String = u["hex"]
+	var area = area_genio() if estesa() else {}
+	# gestione del traffico (19.3): movimento gratuito da spiaggia, valli e dune nel raggio del Genio
+	var traffico: bool = estesa() and area.has(h) and (mappa.basso(h) or mappa.vicini(h).any(func(x): return mappa.lato(h, x) == "B")) and u["dove"] == "mappa" and not u["agito"] and u["conf"] == 0 and u["scalata"] == "" and s["fase"] == "azioni" and not s["flag"].get("genio_bloccato", false) and not s["art_settore"].get(mappa.settore(h), false)
+	if traffico and solo_auto:
+		solo_auto = false
+	if (not puo_agire(u) and not solo_auto and not traffico) or u["conf"] > 0 or u["scalata"] != "":
 		if u["dove"] == "mappa" and not u["agito"] and u["scalata"].begins_with("scogliera:") and u["conf"] == 0:
 			var dest: String = u["scalata"].split(":")[1]
 			if not tedesco_in(dest): o[dest] = "fine_scogliera"
 		return o
-	var h: String = u["hex"]
 	var tp = tipo(u)
 	var dr = _dist_riparo() if fanteria(u) and mappa.spiaggia(h) else {}
+	var piena = func(x: String) -> bool: return not leader(u) and combattenti_in(x).size() >= 2
 	for v in mappa.vicini(h):
-		if tedesco_in(v) or sommerso(v): continue
-		if not leader(u) and combattenti_in(v).size() >= 2: continue
-		var t = mappa.terreno(v)
-		var l = mappa.lato(h, v)
-		if tp == "generale":
-			if l != "X": o[v] = "muovi"
-			continue
-		if l == "X" or t == "accidentato": continue
-		if veicolo(u):
-			if t in ["spiaggia", "pianoro"] and l == "": o[v] = "muovi"
-			continue
-		if tp == "hq":
-			if l != "C": o[v] = "muovi"
-			continue
-		# fanteria
-		if l == "B": o[v] = "duna"
-		elif l == "C": o[v] = "scogliera"
-		else: o[v] = "muovi"
-		if o[v] == "muovi" and mappa.spiaggia(h) and mappa.spiaggia(v) and dr.has(v) and dr.has(h) and dr[v] < dr[h]:
+		var k = passo_ok(u, h, v, area)
+		if k == "" or piena.call(v): continue
+		if estesa() and k == "duna" and not fanteria(u): k = "muovi"
+		o[v] = k
+		percorsi[v] = [v]
+		if k == "muovi" and mappa.spiaggia(h) and mappa.spiaggia(v) and dr.has(v) and dr.has(h) and dr[v] < dr[h]:
 			o[v] = "autocons"
+	if estesa() and not solo_auto:
+		# 17.1: fanteria e leader fino a due esagoni
+		if fanteria(u) or leader(u):
+			for v in o.keys():
+				if not o[v] in ["muovi", "autocons"]: continue
+				if fanteria(u):
+					if mappa.terreno(v) == "bocage" and mappa.strada(h, v) == "": continue
+					if _fuoco_forte(v): continue
+				for w in mappa.vicini(v):
+					if w == h or o.has(w): continue
+					var k2 = passo_ok(u, v, w, area)
+					if k2 != "muovi" or piena.call(w): continue
+					o[w] = "muovi"
+					percorsi[w] = [v, w]
+		# 17.2: carri lungo le strade
+		elif tp == "carro":
+			var tipi = ["P"] if mappa.ha_strada(h, ["P"]) else ["P", "S"]
+			var maxp = 4 if tipi.size() == 1 else 2
+			if mappa.ha_strada(h, ["P", "S", "M"]):
+				var coda: Array = [[h, []]]
+				var visti = {h: true}
+				while not coda.is_empty():
+					var cur: Array = coda.pop_front()
+					var ch: String = cur[0]
+					var path: Array = cur[1]
+					if path.size() >= maxp: continue
+					if path.size() > 0 and _fuoco_intenso(ch): continue
+					for w in mappa.vicini(ch):
+						if visti.has(w): continue
+						var st = mappa.strada(ch, w)
+						if st == "M" and (area.has(ch) or area.has(w)): st = "S"
+						if not st in tipi: continue
+						if passo_ok(u, ch, w, area) != "muovi": continue
+						visti[w] = true
+						var np: Array = path + [w]
+						coda.append([w, np])
+						if not piena.call(w) and not o.has(w):
+							o[w] = "strada"
+							percorsi[w] = np
 	if solo_auto:
 		for v in o.keys():
 			if o[v] != "autocons": o.erase(v)
+	if traffico:
+		mossa_gratis = true
 	return o
 
 func _infiltrazione(h: String, v: String) -> Array:
@@ -133,11 +212,15 @@ func muovi(u: Dictionary, v: String, compagna: Dictionary = {}) -> String:
 	var m = mosse(u)
 	if not m.has(v): return "Movimento non permesso."
 	var k: String = m[v]
+	var gratis = mossa_gratis
+	var path: Array = percorsi.get(v, [v]).duplicate()
 	var gruppo_m: Array = [u]
-	if not compagna.is_empty() and compagna != u and mosse(compagna).get(v, "") == k and k in ["muovi", "duna"]:
-		gruppo_m.append(compagna)
+	if not compagna.is_empty() and compagna != u:
+		var mc = mosse(compagna)
+		if mc.get(v, "") == k and k in ["muovi", "duna", "strada"] and percorsi.get(v, []) == path:
+			gruppo_m.append(compagna)
 	var h: String = u["hex"]
-	if k == "scogliera":
+	if k == "scogliera" and not estesa():
 		u["scalata"] = "scogliera:" + v
 		paga([u])
 		dlog("%s inizia a scalare la scogliera verso %s." % [u["id"], v], "azione")
@@ -148,29 +231,37 @@ func muovi(u: Dictionary, v: String, compagna: Dictionary = {}) -> String:
 		u["scalata"] = "duna"
 		dlog("%s supera la scogliera ed entra in %s." % [u["id"], v], "azione")
 		return ""
-	if leader(u) and gruppo_m.size() == 1 and not _infiltrazione(h, v).is_empty():
+	var tappe: Array = [h] + path
+	var inf_tot: Array = []
+	for i in range(tappe.size() - 1):
+		for pid in _infiltrazione(tappe[i], tappe[i + 1]):
+			if not pid in inf_tot: inf_tot.append(pid)
+	if leader(u) and gruppo_m.size() == 1 and not inf_tot.is_empty():
 		return "Un comando da solo non può infiltrarsi tra due esagoni battuti dalla stessa posizione."
-	if k == "autocons":
+	if k == "autocons" or gratis:
 		for x in gruppo_m: x["agito"] = true
 	else:
 		paga(gruppo_m)
 	if leader(u):
 		s["leader_mossi"][u["id"]] = true
-	var inf = _infiltrazione(h, v)
+		if s["cp"].has(u["id"]): abbandona_cp(u)
 	for x in gruppo_m:
 		x["hex"] = v
-		if k == "duna" and not leader(x):
+		if k == "duna" and not leader(x) and not estesa():
+			x["scalata"] = "duna"
+		if k == "scogliera":
 			x["scalata"] = "duna"
 	var nomi = ", ".join(gruppo_m.map(func(x): return x["id"]))
-	dlog("%s %s in %s." % [nomi, "scala la duna ed entra" if k == "duna" else ("si mette al riparo" if k == "autocons" else "si sposta"), v], "azione")
-	if not inf.is_empty():
+	var verbo = {"duna": "scala la duna ed entra", "autocons": "si mette al riparo", "scogliera": "supera la scogliera ed entra", "strada": "percorre la strada fino"}.get(k, "si sposta")
+	dlog("%s %s in %s%s." % [nomi, verbo, v, " (gestione del traffico del Genio)" if gratis and k != "autocons" else ""], "azione")
+	if not inf_tot.is_empty():
 		var n = pesca()
 		var c = carta(n)
-		dlog("Infiltrazione sotto il fuoco di %s: carta %d." % [", ".join(inf.map(func(p): return nome_pos(p))), n], "carta")
+		dlog("Infiltrazione sotto il fuoco di %s: carta %d." % [", ".join(inf_tot.map(func(p): return nome_pos(p))), n], "carta")
 		for x in gruppo_m:
 			if leader(x): continue
 			var colpito = false
-			for pid in inf:
+			for pid in inf_tot:
 				var q = _quadrato(c, colore(pid))
 				if q.is_empty(): continue
 				var dm = gruppo(pid).any(func(p): return not s["de"][p]["dm"].is_empty())
@@ -179,6 +270,21 @@ func muovi(u: Dictionary, v: String, compagna: Dictionary = {}) -> String:
 			if colpito:
 				perdi_passo(x, "infiltrazione")
 	return ""
+
+## Uscita dalla mappa da un esagono di uscita A-G (20.3)
+func puo_uscire(u: Dictionary) -> bool:
+	if not estesa() or u["dove"] != "mappa" or leader(u) or u["conf"] > 0 or u["scalata"] != "": return false
+	if not mappa.esagoni.get(u["hex"], {}).has("uscita"): return false
+	if not (regolare(u) or tipo(u) in ["ranger", "carro"]): return false
+	return puo_agire(u)
+
+func esci(u: Dictionary) -> void:
+	if not puo_uscire(u): return
+	paga([u])
+	var lettera: String = mappa.esagoni[u["hex"]]["uscita"]
+	s["usciti"].append({"id": u["id"], "passi": passi_rimasti(u), "uscita": lettera, "tipo": tipo(u)})
+	dlog("%s esce dalla mappa dall'uscita %s." % [u["id"], lettera], "azione")
+	u["dove"] = "uscita"
 
 func togli_confusione(u: Dictionary) -> void:
 	if u["conf"] == 1 and not u["agito"] and u["dove"] == "mappa":
@@ -506,10 +612,14 @@ func _sconfitta(pid: String, righe: Array) -> void:
 		righe.append("L'unità tedesca è sconfitta e si ritira nei rinforzi divisionali.")
 	else:
 		righe.append("L'unità tedesca è sconfitta ed eliminata.")
+		if u["k"] == "wn" and def_tedeschi["wn"][u["i"]]["cal"] == "":
+			s["wn_elim"].append(u["i"])
 	s["de"][pid] = {"u": {}, "dm": {}, "conf": false}
 
 # ---------------------------------------------------------------- sbarramenti
 func puo_sbarrare(u: Dictionary, T: String) -> String:
+	if tipo(u) in ["artiglieria", "artiglieria_sp"]:
+		return puo_sbarrare_art(u, T)
 	if tipo(u) != "carro": return "Solo i carri fanno fuoco di sbarramento."
 	if not puo_agire(u) or u["conf"] > 0: return "L'unità non può agire."
 	if not tedesco_in(T): return "Nessun tedesco nell'esagono."
@@ -525,6 +635,28 @@ func puo_sbarrare(u: Dictionary, T: String) -> String:
 		if fanteria(f) and f["conf"] == 0 and campo.has(f["hex"]) and (in_comando(f) or in_comando(u)):
 			return ""
 	return "Serve un osservatore: il carro o una fanteria sotto comando nel campo di fuoco della posizione."
+
+## 17.3: fuoco di sbarramento dell'artiglieria (modalità estesa)
+func puo_sbarrare_art(u: Dictionary, T: String) -> String:
+	if not estesa(): return "L'artiglieria fa fuoco di sbarramento solo dal turno 17."
+	if not puo_agire(u) or u["conf"] > 0: return "L'unità non può agire."
+	if not tedesco_in(T): return "Nessun tedesco nell'esagono."
+	var pid = pos_di(T)
+	if s["attaccati"].has(pid): return "La posizione è già stata attaccata in questo turno."
+	if mappa.posizioni[pid]["tipo"] == "R" and not s["de"][pid]["u"]["riv"]: return "Non si può sparare su un rinforzo non rivelato."
+	var d = Mappa.distanza(u["hex"], T)
+	if d <= 1: return "L'artiglieria non può essere adiacente al bersaglio."
+	if _tiro_vietato_dal_basso(u["hex"], T): return "Dal basso non si vede la posizione sulle alture."
+	var hq = hq_che_comanda(u)
+	if hq.is_empty(): return "Serve il comando di un HQ o di un Posto di Comando."
+	if tipo(u) == "artiglieria" and _in_campo_attivo(u["hex"]): return "L'artiglieria non corazzata non può stare nel campo di fuoco nemico."
+	var campo = mappa.campo(pid)
+	if campo.has(u["hex"]): return ""
+	for f in sulla_mappa():
+		if fanteria(f) and f["conf"] == 0 and campo.has(f["hex"]):
+			for q in hq_che_comanda(f):
+				if q in hq: return ""
+	return "Serve un osservatore: una fanteria dello stesso comando nel campo di fuoco della posizione."
 
 func sbarramento(u: Dictionary, T: String) -> String:
 	var e = puo_sbarrare(u, T)
@@ -589,6 +721,8 @@ func navale(T: String) -> String:
 	return t + "."
 
 # ---------------------------------------------------------------- vittoria
+var _com_us := {}
+
 func esagoni_controllati() -> Dictionary:
 	var ctrl = controllo()
 	var campi = {}
@@ -609,14 +743,20 @@ func esagoni_controllati() -> Dictionary:
 			if mappa.lato(h, v) in ["B", "C", "X"]: continue
 			com[v] = true
 			coda.append(v)
+	_com_us = com
 	var o = {}
 	for h in ctrl:
 		if com.has(h) and not campi.has(h) and not tedesco_in(h):
 			o[h] = true
+	for pid in s.get("guarnigioni", {}):
+		if not occupata(pid):
+			o[mappa.posizioni[pid]["hex"][0]] = true
 	return o
 
 func punti_vittoria() -> Dictionary:
 	var c = esagoni_controllati()
+	if ultimo_turno() == 32 and s["turno"] >= 17:
+		return punti_estesi(c)
 	var wn = 0
 	var rin = 0
 	var dr = 0
@@ -637,12 +777,73 @@ func punti_vittoria() -> Dictionary:
 		var hh: Array = mappa.draws[nome]
 		if easy() and mappa.settore(hh[0]) == "W": continue
 		if hh.all(func(h): return c.has(h)): dr += 5
-	return {"wn": wn, "rinforzi": rin, "valli": dr, "totale": wn + rin + dr, "soglia": 9 if easy() else 19}
+	var soglia = 9 if easy() else (25 if s["scenario"] == "dday" else 19)
+	return {"wn": wn, "rinforzi": rin, "valli": dr, "totale": wn + rin + dr, "soglia": soglia, "estesa": false}
+
+## Punti Vittoria della modalità estesa (20.3)
+func punti_estesi(c: Dictionary) -> Dictionary:
+	var rin = 0
+	var wn_meno = 0
+	for pid in mappa.posizioni:
+		var p: Dictionary = mappa.posizioni[pid]
+		var h: String = p["hex"][0]
+		if p["tipo"] == "R" and p.get("vp", 0) == 1 and c.has(h): rin += 1
+		if p["tipo"] == "WN" and not c.has(h): wn_meno += 1
+	var area = area_genio()
+	var valli = 0
+	for nome in mappa.draws:
+		var hh: Array = mappa.draws[nome]
+		if hh.all(func(h): return c.has(h) and area.has(h)): valli += 4
+	var alture = 0
+	for u in sulla_mappa():
+		if not fanteria(u) and not leader(u) and mappa.alto(u["hex"]): alture += 1
+	var usciti = 0
+	for x in s["usciti"]:
+		var h_usc = ""
+		for h in mappa.esagoni:
+			if mappa.esagoni[h].get("uscita", "") == x["uscita"]: h_usc = h
+		if x["tipo"] == "ranger" and x["uscita"] in ["F", "G"]:
+			usciti += int(x["passi"])
+		elif x["tipo"] != "ranger" and _com_us.has(h_usc):
+			usciti += int(x["passi"])
+	var meyer: int = s["pool"]["M"].size()
+	var tot = rin + valli + alture + usciti - wn_meno - meyer
+	return {"rinforzi": rin, "valli": valli, "alture": alture, "usciti": usciti, "wn_meno": wn_meno, "meyer": meyer,
+		"totale": tot, "soglia": 45 if s["scenario"] == "oltre" else 40, "estesa": true, "wn": 0}
+
+func controllo_prima_vittoria() -> void:
+	var p = punti_vittoria()
+	dlog("Primo controllo della vittoria (turno 16): %d Punti Vittoria." % p["totale"], "finale")
+	if p["totale"] >= 25:
+		s["fine"] = "vittoria"
+		s["fase"] = "fine_partita"
+		s["vp"] = p["totale"]
+		dlog("VITTORIA DECISIVA! Le forze US hanno travolto le difese e si sono assicurate la testa di ponte già alle 10:00.", "finale")
+	elif p["totale"] <= 10:
+		s["fine"] = "sconfitta"
+		s["fase"] = "fine_partita"
+		s["vp"] = p["totale"]
+		dlog("SCONFITTA DECISIVA: solo piccole teste di ponte, la spiaggia resta sotto il fuoco nemico.", "finale")
+	else:
+		dlog("La battaglia continua nell'entroterra: dal turno 17 si gioca con le regole della modalità estesa.", "finale")
 
 func vittoria_finale() -> void:
 	var p = punti_vittoria()
 	s["vp"] = p["totale"]
 	s["fase"] = "fine_partita"
+	if p["estesa"]:
+		var t: int = p["totale"]
+		var off = 5 if s["scenario"] == "oltre" else 0
+		var livelli = [[60, "VITTORIA DECISIVA US: la Normandia è aperta."], [50, "VITTORIA OPERATIVA US: una forte testa di ponte avanza verso l'entroterra."],
+			[40, "VITTORIA TATTICA US (risultato storico): costosa, ma la spiaggia è sicura."], [30, "Sconfitta tattica US: la spiaggia è sicura ma la battaglia nell'entroterra continua."],
+			[20, "Sconfitta operativa US: i tedeschi tengono ancora una striscia di spiaggia."], [-999, "SCONFITTA DECISIVA US: l'Alto Comando blocca gli sbarchi su Omaha Beach."]]
+		for l in livelli:
+			if t >= l[0] + off:
+				dlog("Alle 18:00: %d Punti Vittoria. %s" % [t, l[1]], "finale")
+				break
+		s["fine"] = "vittoria" if t >= p["soglia"] else "sconfitta"
+		dlog("Posizioni di rinforzo VP %d, valli aperte %d, unità sulle alture %d, punti usciti dalla mappa %d, WN non controllate -%d, Kampfgruppe Meyer non impiegato -%d." % [p["rinforzi"], p["valli"], p["alture"], p["usciti"], p["wn_meno"], p["meyer"]], "finale")
+		return
 	if p["totale"] >= p["soglia"]:
 		s["fine"] = "vittoria"
 		dlog("VITTORIA! Alle 10:00 le Divisioni US tengono %d Punti Vittoria (servono %d): la testa di ponte su Omaha Beach è stabilita." % [p["totale"], p["soglia"]], "finale")
@@ -684,3 +885,12 @@ func importa(d: Dictionary) -> void:
 		s["eroi"][k] = s["eroi"][k].map(func(x): return int(x))
 	for k in s["carte_turno"]:
 		s["carte_turno"][k] = int(s["carte_turno"][k])
+	for k in ["wn_elim", "basi", "usciti"]:
+		if not s.has(k): s[k] = []
+	for k in ["cp", "guarnigioni", "art_settore", "genio_fatto"]:
+		if not s.has(k): s[k] = {}
+	s["wn_elim"] = s["wn_elim"].map(func(x): return int(x))
+	for b in s["basi"]:
+		b["i"] = int(b["i"]); b["div"] = int(b["div"])
+	for k in s["cp"]:
+		s["cp"][k] = int(s["cp"][k])

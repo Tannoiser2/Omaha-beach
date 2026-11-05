@@ -10,6 +10,16 @@ func _init(p: Partita) -> void:
 func gioca_turno() -> void:
 	if g.s["fase"] != "azioni":
 		return
+	if g.estesa():
+		for u in g.sulla_mappa():
+			if g.tipo(u) == "hq" and g.puo_cp(u) == "": g.stabilisci_cp(u)
+		for div in [1, 29]:
+			for h in g.mappa.esagoni:
+				if g.puo_base(h, div) == "" and g.mappa.vicini(h).any(func(x): return g.mappa.lato(h, x) == "B" or g.mappa.terreno(x) == "pianoro"):
+					g.stabilisci_base(h, div)
+					break
+		for u in g.sulla_mappa():
+			if g.puo_uscire(u) and g.s["turno"] >= 28: g.esci(u)
 	for u in g.sulla_mappa():
 		if u["conf"] == 1 and not u["agito"]:
 			g.togli_confusione(u)

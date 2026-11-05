@@ -8,7 +8,11 @@ extends RefCounted
 signal registro(testo: String, tipo: String)
 
 const SIMBOLI := {"D": "rombo", "T": "triangolo", "C": "cerchio"}
-const ORARI := ["", "06:15", "06:30", "06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30", "09:45", "10:00"]
+const ORARI := ["", "06:15", "06:30", "06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30", "09:45", "10:00",
+	"10:15", "10:45", "11:15", "11:45", "12:15", "12:45", "13:15", "13:45", "14:15", "14:45", "15:15", "15:45", "16:15", "16:45", "17:15", "17:45"]
+## Tracciati del raggio dei Posti di Comando e delle Basi del Genio (valori ripetuti = più turni per crescere)
+const TRACCIA_CP := [1, 1, 2, 2, 3, 3, 3, 4]
+const TRACCIA_GENIO := [0, 1, 2, 2, 3, 3, 4, 4, 5]
 const ARMI_PIENE := ["BZ", "BG", "BR", "DE", "MO", "RD"]
 const NOMI_ARMI := {"BZ": "Bazooka", "BG": "Bangalore", "BR": "Fucile Browning", "DE": "Demolizioni", "MO": "Mortaio", "RD": "Radio", "MG": "Mitragliatrice", "AR": "Artiglieria", "NA": "Fuoco navale", "FL": "Aggiramento"}
 
@@ -52,14 +56,15 @@ func nuova(scenario := "prima_ondata", seme := 0) -> void:
 		"pool": {}, "mazzo": [], "scarti": [], "carte_turno": {}, "navali": 0, "bonificati": {}, "fumo": [],
 		"flag": {}, "perdite": {"1": [], "29": []}, "eroi": {"1": [0, 1, 2, 3, 4], "29": [0, 1, 2, 3, 4]},
 		"azioni": {"1": 2, "29": 2}, "attaccati": {}, "sbarrati": {}, "fine": "", "vp": 0, "razzi_sparati": false,
-		"comando": {}, "leader_mossi": {}, "conta_carte": 0}
+		"comando": {}, "leader_mossi": {}, "conta_carte": 0, "wn_elim": [], "basi": [], "cp": {}, "guarnigioni": {},
+		"usciti": [], "art_settore": {}, "genio_fatto": {}}
 	var easy = scenario == "easy_fox"
 	# --- unità US
 	for i in def_unita.size():
 		var d: Dictionary = def_unita[i]
 		if easy and (d["div"] != 1 or (d["turno"] > 10)):
 			continue
-		if not easy and d["turno"] > 16:
+		if scenario == "prima_ondata" and d["turno"] > 16:
 			continue
 		var u = {"i": i, "id": d["id"], "div": int(d["div"]), "cmd": int(d["div"]), "passo": 0, "dove": "traccia",
 			"arrivo": int(d["turno"]), "box": "", "hex": "", "conf": 0, "scalata": "", "eroe": -1, "ispirato": false,
@@ -130,17 +135,23 @@ func nuova(scenario := "prima_ondata", seme := 0) -> void:
 		s["art"].append(a.duplicate())
 	# carte (la 55 è il riepilogo e non entra nel mazzo)
 	s["mazzo"] = _mescola(range(1, 55))
+	if scenario == "oltre":
+		prepara_oltre()
 	dlog("Nuova partita: %s." % nome_scenario(), "titolo")
 	inizia_turno()
 
 func nome_scenario() -> String:
-	return "Easy Fox (introduttivo)" if s["scenario"] == "easy_fox" else "La prima ondata"
+	return {"easy_fox": "Easy Fox (introduttivo)", "prima_ondata": "La prima ondata", "dday": "D-Day at Omaha Beach", "oltre": "Oltre la spiaggia"}.get(s["scenario"], "")
+
+## Turni 17-32: regole della modalità estesa (sezioni 14-20)
+func estesa() -> bool:
+	return s["turno"] >= 17
 
 func easy() -> bool:
 	return s["scenario"] == "easy_fox"
 
 func ultimo_turno() -> int:
-	return 16
+	return 32 if s["scenario"] in ["dday", "oltre"] else 16
 
 func _mescola(a) -> Array:
 	var b: Array = Array(a).duplicate()
@@ -288,9 +299,15 @@ func inizia_turno() -> void:
 	s["azioni"] = {"1": 2, "29": 2}
 	s["attaccati"] = {}
 	s["sbarrati"] = {}
+	s["art_settore"] = {}
+	s["genio_fatto"] = {}
 	for u in s["us"]:
 		u["agito"] = false
 		if u["conf"] == 2: u["conf"] = 1
+	if t == 24:
+		for h in mappa.media_set:
+			s["bonificati"][h] = true
+		dlog("Tutti gli ostacoli sulla linea di marea media sono demoliti (19.4).", "info")
 	fase_anfibia()
 	if t > 1:
 		fase_evento()
@@ -299,14 +316,22 @@ func inizia_turno() -> void:
 	fase_fuoco()
 	if s["fine"] != "":
 		return
+	if estesa() and t < 32:
+		fase_evento()
+		if s["fine"] != "":
+			return
 	if t >= 2:
 		fase_genio()
+	if estesa():
+		fase_genio_hq()
 	inizia_azioni()
 
 func inizia_azioni() -> void:
 	s["fase"] = "azioni"
+	var base_az = 3 if estesa() else 2
+	s["azioni"] = {"1": base_az, "29": base_az}
 	if s["flag"].get("iniziativa", false):
-		s["azioni"] = {"1": 3, "29": 3}
+		s["azioni"] = {"1": base_az + 1, "29": base_az + 1}
 	if s["flag"].get("fuoco_intenso", false):
 		s["azioni"] = {"1": 1, "29": 1}
 	s["comando"] = {}
@@ -320,6 +345,19 @@ func inizia_azioni() -> void:
 				if not s["comando"].has(u["id"]):
 					s["comando"][u["id"]] = []
 				s["comando"][u["id"]].append(l["id"])
+	# Posti di Comando (18.3): comandano entro il loro raggio, se non sono sotto il fuoco
+	for hq in s["cp"]:
+		var l = unita(hq)
+		if l.is_empty() or l["dove"] != "mappa": continue
+		if in_campo_occupato(l["hex"]): continue
+		var r: int = raggio_cp(hq)
+		for u in sulla_mappa():
+			if u == l or leader(u): continue
+			if Mappa.distanza(u["hex"], l["hex"]) <= r:
+				if not s["comando"].has(u["id"]):
+					s["comando"][u["id"]] = []
+				if not hq in s["comando"][u["id"]]:
+					s["comando"][u["id"]].append(hq)
 	if easy():
 		dlog("Fase delle azioni US: %d azioni per la 1ª Divisione." % s["azioni"]["1"], "fase")
 	else:
@@ -342,6 +380,9 @@ func fine_azioni() -> void:
 	for u in s["us"]:
 		if u["conf"] == 2: u["conf"] = 1
 	var t: int = s["turno"]
+	# unità che escono dalla mappa sono già registrate; guarnigioni nelle posizioni sicure
+	if estesa():
+		aggiorna_guarnigioni()
 	# marea che sale (5.21)
 	if t == 7:
 		for u in sulla_mappa():
@@ -362,6 +403,10 @@ func fine_azioni() -> void:
 	if t >= ultimo_turno():
 		vittoria_finale()
 		return
+	if t == 16 and s["scenario"] == "dday":
+		controllo_prima_vittoria()
+		if s["fine"] != "":
+			return
 	s["turno"] = t + 1
 	inizia_turno()
 
@@ -392,7 +437,7 @@ func fase_anfibia() -> void:
 			var n = pesca()
 			s["carte_turno"]["sbarco_" + sett] = n
 			var c = carta(n)
-			mina = c["mina"] and t >= 7
+			mina = c["mina"] and t >= 7 and t <= 22
 			dlog("Carta sbarco settore %s: n.%d (rombo %s, triangolo %s, cerchio %s)%s" % [_nome_sett(sett), n, c["sbarco"]["D"], c["sbarco"]["T"], c["sbarco"]["C"], ", mine!" if c["mina"] else ""], "carta")
 			for u in da_controllare:
 				_esito_sbarco(u, c["sbarco"][simbolo(u)], t)
@@ -592,7 +637,7 @@ func elimina(u: Dictionary, motivo := "") -> void:
 func controlla_catastrofe() -> void:
 	for k in ["1", "29"]:
 		if easy() and k == "29": continue
-		if s["perdite"][k].size() >= 8:
+		if s["perdite"][k].size() >= (14 if estesa() else 8):
 			s["fine"] = "sconfitta"
 			s["fase"] = "fine_partita"
 			dlog("SCONFITTA CATASTROFICA: la %s Divisione ha perso otto compagnie di fanteria. Il comando chiude la spiaggia agli sbarchi." % ("1ª" if k == "1" else "29ª"), "finale")
@@ -676,6 +721,12 @@ func esegui_evento(cod: String, par) -> void:
 			prigioniero(int(par))
 		"FUOCO_INTENSO":
 			s["flag"]["fuoco_intenso"] = true
+		"NAVALE_INATTESO":
+			navale_inatteso(par)
+		"CECCHINI":
+			s["flag"]["cecchini"] = true
+		"NASCOSTI":
+			tedeschi_nascosti(par)
 		_:
 			dlog("(Evento della modalità estesa: nessun effetto nei turni 1-16.)", "info")
 
@@ -940,6 +991,8 @@ func in_comunicazione(pid: String, ctrl = null) -> bool:
 					return true
 		return false
 	var start: Array = mappa.posizioni[pid]["hex"]
+	if not occupata(pid) and start.any(func(x): return occ_us.has(x)):
+		return false
 	var coda: Array = start.duplicate()
 	var visti = {}
 	for h in coda: visti[h] = true
@@ -969,7 +1022,10 @@ func fase_fuoco() -> void:
 		s["carte_turno"]["fuoco_" + sett] = n
 		var c = carta(n)
 		dlog("Carta fuoco settore %s: n.%d - colori %s, simbolo %s." % [_nome_sett(sett), n, ", ".join(c["fuoco"].map(func(q): return q["col"] + (" (doppio)" if q["doppio"] else ""))), SIMBOLI[c["bersaglio"]]], "carta")
-		fuoco_settore(sett, c)
+		if estesa():
+			azioni_tedesche(sett, c)
+		else:
+			fuoco_settore(sett, c)
 		if s["turno"] >= 4 and c["art"] != null:
 			artiglieria(sett, c)
 		# tolgo la confusione alle posizioni dei colori pescati (6.4)
@@ -1018,6 +1074,7 @@ func posizioni_che_sparano(sett: String, c: Dictionary) -> Array:
 				rivelata = false
 		if not occ or limite == 0: continue
 		if q["doppio"] and not dm: continue
+		if estesa(): limite *= 2
 		o.append({"pid": pid, "parti": g, "limite": limite, "nascosta": not rivelata, "q": q})
 	return o
 
@@ -1025,75 +1082,82 @@ func fuoco_settore(sett: String, c: Dictionary) -> void:
 	var gia_passo = {}
 	var colpi = 0
 	for f in posizioni_che_sparano(sett, c):
-		var campo = mappa.campo(f["pid"])
-		var q: Dictionary = f["q"]
-		var cand: Array = []
-		for h in campo:
-			var liv: int = campo[h]
-			if liv == 1 and s["flag"].get("piombante", false) and mappa.protezione.has(h):
-				liv = 2
-			var conc = passi_hex(h) >= 5
-			for u in combattenti_in(h):
-				var sim_ok: bool = conc or simbolo(u) == c["bersaglio"]
-				var cor: bool = corazzata(u) and not q["carri"]
-				var eff = ""
-				if liv == 3:
-					eff = "passo_conf" if f["nascosta"] else "passo"
-				elif liv == 2:
-					if not cor and sim_ok:
-						eff = "passo_conf" if f["nascosta"] else "passo"
-				else:
-					if not cor and sim_ok:
-						eff = "conf"
-				if eff != "":
-					cand.append({"u": u, "liv": liv, "d": Mappa.distanza(h, mappa.posizioni[f["pid"]]["hex"][0]), "eff": eff})
-		cand.sort_custom(func(a, b):
-			if a["liv"] != b["liv"]: return a["liv"] > b["liv"]
-			var pa: bool = gia_passo.has(a["u"]["id"]) and a["eff"] != "conf"
-			var pb: bool = gia_passo.has(b["u"]["id"]) and b["eff"] != "conf"
-			if pa != pb: return pb
-			if a["d"] != b["d"]: return a["d"] < b["d"]
-			return passi_rimasti(a["u"]) > passi_rimasti(b["u"]))
-		var resto: int = f["limite"]
-		var colpite: Array = []
-		for k in cand:
-			if resto <= 0: break
-			var u: Dictionary = k["u"]
-			if u["dove"] != "mappa": continue
-			var e: String = k["eff"]
-			if e.begins_with("passo") and gia_passo.has(u["id"]):
-				if e == "passo_conf":
-					e = "conf"
-				else:
-					continue
-			resto -= 1
-			colpite.append(u["id"])
-			if e.begins_with("passo"):
-				gia_passo[u["id"]] = true
-				perdi_passo(u, "fuoco da %s" % nome_pos(f["pid"]))
-			if e.ends_with("conf") and u["dove"] == "mappa":
-				if u["conf"] == 0:
-					u["conf"] = 1
-					dlog("%s in confusione (fuoco da %s)." % [u["id"], nome_pos(f["pid"])], "danno")
-			colpi += 1
-		# leader (11.4)
-		if q["stella"] and resto > 0:
-			for h in campo:
-				if campo[h] < 2: continue
-				var fatto = false
-				for u in unita_in(h):
-					if leader(u):
-						colpisci_leader(u)
-						fatto = true
-						break
-					if u["eroe"] >= 0 and not u["ispirato"]:
-						u["ispirato"] = true
-						dlog("L'eroe di %s cade sotto il fuoco: l'unità diventa Ispirata." % u["id"], "eroe")
-						fatto = true
-						break
-				if fatto: break
+		colpi += fuoco_pos(f, c, gia_passo)
 	if colpi == 0:
 		dlog("Il fuoco tedesco nel settore %s non colpisce nessuno." % _nome_sett(sett), "info")
+
+## Fuoco di una posizione (6.3). Restituisce il numero di unità colpite.
+func fuoco_pos(f: Dictionary, c: Dictionary, gia_passo: Dictionary) -> int:
+	var colpi = 0
+	if true:
+			var campo = mappa.campo(f["pid"])
+			var q: Dictionary = f["q"]
+			var cand: Array = []
+			for h in campo:
+				var liv: int = campo[h]
+				if liv == 1 and s["flag"].get("piombante", false) and mappa.protezione.has(h):
+					liv = 2
+				var conc = passi_hex(h) >= 5
+				for u in combattenti_in(h):
+					var sim_ok: bool = conc or simbolo(u) == c["bersaglio"]
+					var cor: bool = corazzata(u) and not q["carri"]
+					var eff = ""
+					if liv == 3:
+						eff = "passo_conf" if f["nascosta"] else "passo"
+					elif liv == 2:
+						if not cor and sim_ok:
+							eff = "passo_conf" if f["nascosta"] else "passo"
+					else:
+						if not cor and sim_ok:
+							eff = "conf"
+					if eff != "":
+						cand.append({"u": u, "liv": liv, "d": Mappa.distanza(h, mappa.posizioni[f["pid"]]["hex"][0]), "eff": eff})
+			cand.sort_custom(func(a, b):
+				if a["liv"] != b["liv"]: return a["liv"] > b["liv"]
+				var pa: bool = gia_passo.has(a["u"]["id"]) and a["eff"] != "conf"
+				var pb: bool = gia_passo.has(b["u"]["id"]) and b["eff"] != "conf"
+				if pa != pb: return pb
+				if a["d"] != b["d"]: return a["d"] < b["d"]
+				return passi_rimasti(a["u"]) > passi_rimasti(b["u"]))
+			var resto: int = f["limite"]
+			var colpite: Array = []
+			for k in cand:
+				if resto <= 0: break
+				var u: Dictionary = k["u"]
+				if u["dove"] != "mappa": continue
+				var e: String = k["eff"]
+				if e.begins_with("passo") and gia_passo.has(u["id"]):
+					if e == "passo_conf":
+						e = "conf"
+					else:
+						continue
+				resto -= 1
+				colpite.append(u["id"])
+				if e.begins_with("passo"):
+					gia_passo[u["id"]] = true
+					perdi_passo(u, "fuoco da %s" % nome_pos(f["pid"]))
+				if e.ends_with("conf") and u["dove"] == "mappa":
+					if u["conf"] == 0:
+						u["conf"] = 1
+						dlog("%s in confusione (fuoco da %s)." % [u["id"], nome_pos(f["pid"])], "danno")
+				colpi += 1
+			# leader (11.4)
+			if q["stella"] and resto > 0:
+				for h in campo:
+					if campo[h] < 2: continue
+					var fatto = false
+					for u in unita_in(h):
+						if leader(u):
+							colpisci_leader(u)
+							fatto = true
+							break
+						if u["eroe"] >= 0 and not u["ispirato"]:
+							u["ispirato"] = true
+							dlog("L'eroe di %s cade sotto il fuoco: l'unità diventa Ispirata." % u["id"], "eroe")
+							fatto = true
+							break
+					if fatto: break
+	return colpi
 
 func colpisci_leader(u: Dictionary) -> void:
 	if tipo(u) == "hq":
@@ -1149,6 +1213,7 @@ func artiglieria(sett: String, c: Dictionary) -> void:
 		if g.is_empty(): continue
 		g.sort_custom(func(x, y): return passi_rimasti(x) > passi_rimasti(y))
 		dlog("L'artiglieria tedesca colpisce!", "danno")
+		s["art_settore"][sett] = true
 		perdi_passo(g[0], "artiglieria")
 		return
 	dlog("L'artiglieria tedesca non trova bersagli con il simbolo %s." % SIMBOLI[sim], "info")
@@ -1188,3 +1253,567 @@ func fase_genio() -> void:
 # ridefinita in Partita
 func vittoria_finale() -> void:
 	pass
+
+func controllo_prima_vittoria() -> void:
+	pass
+
+
+# ================================================================ modalità estesa (turni 17-32)
+func in_campo_occupato(h: String) -> bool:
+	for pid in pos_attive():
+		if mappa.campo(pid).has(h): return true
+	return false
+
+## Campo di fuoco potenziale: occupate oppure vuote ma in comunicazione (19.1)
+func in_campo_potenziale(h: String) -> bool:
+	for pid in mappa.posizioni:
+		if not mappa.campo(pid).has(h): continue
+		if occupata(pid) or in_comunicazione(pid): return true
+	return false
+
+func raggio_cp(hq: String) -> int:
+	if s["flag"].get("cecchini", false): return 1
+	return TRACCIA_CP[min(int(s["cp"][hq]), TRACCIA_CP.size() - 1)]
+
+func raggio_base(b: Dictionary) -> int:
+	return TRACCIA_GENIO[min(int(b["i"]), TRACCIA_GENIO.size() - 1)]
+
+## Esagoni nel raggio delle Basi del Genio (19.31-19.32)
+func area_genio() -> Dictionary:
+	var o = {}
+	if s["basi"].is_empty(): return o
+	var occ = {}
+	for pid in pos_attive():
+		for h in mappa.campo(pid): occ[h] = true
+	for b in s["basi"]:
+		var r = raggio_base(b)
+		for h in mappa.esagoni:
+			if Mappa.distanza(h, b["hex"]) <= r and not occ.has(h):
+				o[h] = true
+	return o
+
+func fase_genio_hq() -> void:
+	# Posti di Comando: crescono di uno spazio se non sono nel campo di fuoco nemico (18.2)
+	for hq in s["cp"].keys():
+		var l = unita(hq)
+		if l.is_empty() or l["dove"] != "mappa":
+			s["cp"].erase(hq)
+			continue
+		if not in_campo_potenziale(l["hex"]) and int(s["cp"][hq]) < TRACCIA_CP.size() - 1:
+			s["cp"][hq] = int(s["cp"][hq]) + 1
+	# Basi del Genio: una crescita per Divisione per turno, non se c'è stato fuoco d'artiglieria (19.21, 19.33)
+	if s["flag"].get("genio_bloccato", false):
+		dlog("L'artiglieria tedesca blocca le operazioni del Genio in questo turno.", "info")
+		return
+	for b in s["basi"]:
+		var sett = mappa.settore(b["hex"])
+		if s["art_settore"].get(sett, false): continue
+		if s["genio_fatto"].has(str(b["div"])): continue
+		if in_campo_potenziale(b["hex"]): continue
+		if int(b["i"]) < TRACCIA_GENIO.size() - 1:
+			b["i"] = int(b["i"]) + 1
+			s["genio_fatto"][str(b["div"])] = true
+	aggiorna_guarnigioni()
+
+func aggiorna_guarnigioni() -> void:
+	var area = area_genio()
+	for pid in mappa.posizioni:
+		if occupata(pid) or s["guarnigioni"].has(pid): continue
+		var h: String = mappa.posizioni[pid]["hex"][0]
+		if area.has(h) and not in_campo_occupato(h):
+			s["guarnigioni"][pid] = true
+			dlog("Una guarnigione US presidia la %s." % nome_pos(pid), "info")
+
+func puo_base(h: String, div: int) -> String:
+	if not estesa(): return "Le Basi del Genio si stabiliscono dal turno 17."
+	if s["basi"].filter(func(b): return b["div"] == div).size() >= 2: return "La Divisione ha già due Basi del Genio."
+	if s["genio_fatto"].has(str(div)): return "In questo turno la Divisione ha già fatto un'operazione del Genio."
+	if not mappa.spiaggia(h): return "La base va su un esagono di spiaggia."
+	if mappa.settore(h) != ("E" if div == 1 else "W"): return "La base va nel settore della sua Divisione."
+	if in_campo_potenziale(h): return "L'esagono è nel campo di fuoco di una posizione tedesca."
+	if s["flag"].get("genio_bloccato", false) or s["art_settore"].get(mappa.settore(h), false): return "L'artiglieria tedesca blocca il Genio in questo turno."
+	return ""
+
+func stabilisci_base(h: String, div: int) -> String:
+	var e = puo_base(h, div)
+	if e != "": return e
+	s["basi"].append({"hex": h, "div": div, "i": 0})
+	s["genio_fatto"][str(div)] = true
+	dlog("Il Genio della %s Divisione stabilisce una base in %s." % ["1ª" if div == 1 else "29ª", h], "azione")
+	return ""
+
+func puo_cp(u: Dictionary) -> String:
+	if not estesa(): return "I Posti di Comando si stabiliscono dal turno 17."
+	if tipo(u) != "hq" or u["dove"] != "mappa": return "Solo un HQ sulla mappa."
+	if s["cp"].has(u["id"]): return "È già un Posto di Comando."
+	if u["agito"] or s["leader_mossi"].has(u["id"]): return "L'HQ si è già mosso in questo turno."
+	if in_campo_potenziale(u["hex"]): return "L'esagono è nel campo di fuoco di una posizione tedesca."
+	return ""
+
+func stabilisci_cp(u: Dictionary) -> String:
+	var e = puo_cp(u)
+	if e != "": return e
+	s["cp"][u["id"]] = 0
+	u["agito"] = true
+	dlog("%s diventa Posto di Comando (raggio 1)." % u["id"], "azione")
+	inizia_comando()
+	return ""
+
+func abbandona_cp(u: Dictionary) -> void:
+	if s["cp"].has(u["id"]):
+		s["cp"].erase(u["id"])
+		dlog("%s smonta il Posto di Comando." % u["id"], "azione")
+
+## Ricalcola il comando (dopo un nuovo Posto di Comando)
+func inizia_comando() -> void:
+	pass
+
+# ---------------------------------------------------------------- azioni tedesche (16)
+const ORDINE_ZONE := "ABCDEFG"
+
+func _ordine_azione(pid: String) -> float:
+	var p: Dictionary = mappa.posizioni[pid]
+	if p["tipo"] == "WN": return 1000.0 + float(int(pid.substr(2, 2)))
+	return float(p["prio"]) * 10.0 + float(ORDINE_ZONE.find(p["zona"]) if p["zona"] != "" else -1) * 0.1
+
+func us_nel_campo(pid: String, livelli := [1, 2, 3]) -> Array:
+	var campo = mappa.campo(pid)
+	var o: Array = []
+	for h in campo:
+		if not int(campo[h]) in livelli: continue
+		for u in combattenti_in(h): o.append(u)
+	return o
+
+func azioni_tedesche(sett: String, c: Dictionary) -> void:
+	var fatti = {}
+	var lista: Array = []
+	for pid in mappa.posizioni:
+		var g: String = mappa.posizioni[pid].get("gruppo", pid)
+		if fatti.has(g): continue
+		fatti[g] = true
+		if settore_pos(pid) != sett: continue
+		var q = _quadrato(c, colore(pid))
+		if q.is_empty(): continue
+		lista.append(pid)
+	# prima le posizioni con il numero maggiore (16, sequenza delle azioni)
+	lista.sort_custom(func(a, b): return _ordine_azione(a) > _ordine_azione(b))
+	var avanzate: Array = []
+	var colpi = 0
+	for pid in lista:
+		var q = _quadrato(c, colore(pid))
+		var az: String = q.get("az", "F")
+		var parti = gruppo(pid)
+		var occ = parti.any(func(x): return occupata(x))
+		var wn: bool = mappa.posizioni[pid]["tipo"] == "WN"
+		if _fumo(pid): continue
+		if occ:
+			var attive = parti.filter(func(x): return occupata(x) and not s["de"][x]["conf"])
+			if attive.is_empty(): continue
+			var con_dm = parti.any(func(x): return occupata(x) and not s["de"][x]["dm"].is_empty())
+			var nel_campo = not us_nel_campo(pid).is_empty()
+			if q["doppio"] and not con_dm:
+				# 16.21: il rifornimento si fa anche con il quadrato doppio
+				if not (az == "R" and not wn and nel_campo):
+					continue
+			if az == "F":
+				if nel_campo: colpi += _spara(pid, c)
+			elif az == "R":
+				if wn:
+					if nel_campo: colpi += _spara(pid, c)
+				elif nel_campo:
+					rifornimento(pid)
+					colpi += _spara(pid, c)
+				else:
+					reimpiego(pid)
+			elif az == "M":
+				if nel_campo: colpi += _spara(pid, c)
+				else: mortai(pid, c)
+			elif az == "P":
+				if wn:
+					if nel_campo: colpi += _spara(pid, c)
+				else:
+					pattuglia_ted(pid, c)
+			elif az == "A":
+				if wn:
+					if nel_campo: colpi += _spara(pid, c)
+					else: artiglieria_wn(pid, c)
+				else:
+					avanzate.append(pid)
+		else:
+			if not in_comunicazione(pid): continue
+			if wn:
+				if az == "R": rioccupa(pid)
+				continue
+			if _dist_us(pid) > 2: continue
+			if az == "R": rinforzo_posizione(pid)
+			elif az == "A": imboscata(pid, c)
+	for pid in avanzate:
+		if occupata(pid) and not s["de"][pid]["conf"]:
+			avanzata(pid, c)
+	if colpi == 0:
+		dlog("Nessun colpo diretto dalle posizioni tedesche del settore %s." % _nome_sett(sett), "info")
+
+func _spara(pid: String, c: Dictionary) -> int:
+	var parti = gruppo(pid)
+	var limite = 0
+	var nascosta = false
+	for x in parti:
+		var de: Dictionary = s["de"][x]
+		if de["u"].is_empty() or de["conf"]: continue
+		limite += 1 + (0 if de["dm"].is_empty() else 1)
+		if mappa.posizioni[x]["tipo"] == "R" and not de["u"]["riv"]: nascosta = true
+	if limite == 0: return 0
+	var f = {"pid": pid, "parti": parti, "limite": limite * 2, "nascosta": nascosta, "q": _quadrato(c, colore(pid))}
+	return fuoco_pos(f, c, {})
+
+func rioccupa(pid: String) -> void:
+	var parti = gruppo(pid)
+	var occ_us = parti.any(func(x): return not unita_in(mappa.posizioni[x]["hex"][0]).filter(func(u): return tipo(u) != "generale").is_empty())
+	if occ_us: return
+	if parti.any(func(x): return s["guarnigioni"].has(x)): return
+	for x in parti:
+		if s["wn_elim"].is_empty():
+			dlog("Nessuna unità WN disponibile per rioccupare %s." % nome_pos(pid), "info")
+			return
+		s["wn_elim"] = _mescola(s["wn_elim"])
+		var i: int = s["wn_elim"].pop_back()
+		s["de"][x] = {"u": {"k": "wn", "i": i, "riv": true}, "dm": {}, "conf": false}
+		dlog("I tedeschi rioccupano la %s." % nome_pos(x), "tedesco")
+
+func rifornimento(pid: String) -> void:
+	if not s["de"][pid]["dm"].is_empty() or not in_comunicazione(pid): return
+	var dm = _dm_per(pid)
+	if dm.is_empty(): return
+	s["de"][pid]["dm"] = dm
+	dlog("La %s si rifornisce: arriva un segnalino Incognita." % nome_pos(pid), "tedesco")
+
+func _passi_campo(pid: String) -> int:
+	var t = 0
+	for u in us_nel_campo(pid): t += passi_rimasti(u)
+	return t
+
+func reimpiego(pid: String) -> void:
+	if not in_comunicazione(pid): return
+	var vp: bool = mappa.posizioni[pid].get("vp", 0) == 1
+	var sett = settore_pos(pid)
+	var cand: Array = []
+	for x in mappa.posizioni:
+		var p: Dictionary = mappa.posizioni[x]
+		if p["tipo"] != "R" or occupata(x) or s["guarnigioni"].has(x): continue
+		if mappa.settore(p["hex"][0]) != sett: continue
+		if vp and p.get("vp", 0) != 1: continue
+		if us_nel_campo(x).is_empty() or not in_comunicazione(x): continue
+		if not unita_in(p["hex"][0]).filter(func(u): return tipo(u) != "generale").is_empty(): continue
+		cand.append(x)
+	if cand.is_empty(): return
+	cand.sort_custom(func(a, b):
+		var va = mappa.posizioni[a].get("vp", 0); var vb = mappa.posizioni[b].get("vp", 0)
+		if va != vb: return va > vb
+		var pa = mappa.posizioni[a]["prio"]; var pb = mappa.posizioni[b]["prio"]
+		if pa != pb: return pa < pb
+		return _passi_campo(a) > _passi_campo(b))
+	_sposta_tedesco(pid, cand[0])
+	dlog("L'unità tedesca della %s si reimpiega nella %s." % [nome_pos(pid), nome_pos(cand[0])], "tedesco")
+
+func _sposta_tedesco(da: String, a: String) -> void:
+	var de: Dictionary = s["de"][da]
+	s["de"][a] = {"u": de["u"], "dm": de["dm"], "conf": de["conf"]}
+	s["de"][da] = {"u": {}, "dm": {}, "conf": false}
+	s["guarnigioni"].erase(a)
+	var dm: Dictionary = s["de"][a]["dm"]
+	if not dm.is_empty() and dm["p"] in ["mobile", "edificio"]:
+		var serve = "edificio" if mappa.posizioni[a].get("ed", 0) == 1 else "mobile"
+		if dm["p"] != serve and not s["pool"][serve].is_empty():
+			s["pool"][dm["p"]].append(dm["i"])
+			s["de"][a]["dm"] = {"p": serve, "i": s["pool"][serve].pop_back(), "riv": false}
+	for u in unita_in(mappa.posizioni[a]["hex"][0]):
+		if tipo(u) == "generale": elimina(u, "catturato dai tedeschi")
+
+func rinforzo_posizione(pid: String) -> void:
+	if s["guarnigioni"].has(pid): return
+	var h: String = mappa.posizioni[pid]["hex"][0]
+	if not unita_in(h).filter(func(u): return tipo(u) != "generale").is_empty(): return
+	var vp: bool = mappa.posizioni[pid].get("vp", 0) == 1
+	if not vp and us_nel_campo(pid, [2, 3]).is_empty(): return
+	var r = _pesca_rinforzo()
+	if r.is_empty(): return
+	piazza_rinforzo(pid, r, true, false)
+
+func mortai(pid: String, c: Dictionary) -> void:
+	var base: String = mappa.posizioni[pid]["hex"][0]
+	var wn: bool = mappa.posizioni[pid]["tipo"] == "WN"
+	var cand: Array = []
+	for u in sulla_mappa():
+		if leader(u) or simbolo(u) != c["bersaglio"]: continue
+		var d = Mappa.distanza(u["hex"], base)
+		var ok = false
+		if wn:
+			var vicino_sp = mappa.spiaggia(u["hex"]) or (mappa.terreno(u["hex"]) == "pianoro" and mappa.vicini(u["hex"]).any(func(x): return mappa.spiaggia(x)))
+			ok = (vicino_sp and d <= 5) or (d <= 2 and mappa.terreno(u["hex"]) in ["pianoro", "altura", "bocage", "bosco"])
+		else:
+			ok = d <= 3
+		if ok: cand.append(u)
+	if cand.is_empty(): return
+	cand.sort_custom(func(a, b): return passi_rimasti(a) > passi_rimasti(b))
+	var n = 2 if not s["de"][pid]["dm"].is_empty() else 1
+	for u in cand.slice(0, n):
+		perdi_passo(u, "mortai da %s" % nome_pos(pid))
+
+func pattuglia_ted(pid: String, c: Dictionary) -> void:
+	var colpite = us_nel_campo(pid, [2, 3])
+	if colpite.is_empty():
+		var base: String = mappa.posizioni[pid]["hex"][0]
+		var cand = sulla_mappa().filter(func(u): return not leader(u) and Mappa.distanza(u["hex"], base) <= 3)
+		if cand.is_empty(): return
+		cand.sort_custom(func(a, b):
+			var da = Mappa.distanza(a["hex"], base); var db = Mappa.distanza(b["hex"], base)
+			if da != db: return da < db
+			var sa = simbolo(a) == c["bersaglio"]; var sb = simbolo(b) == c["bersaglio"]
+			if sa != sb: return sa
+			return attacco(a) > attacco(b))
+		colpite = [cand[0]]
+	var nomi: Array = []
+	for u in colpite:
+		if u["conf"] == 0:
+			u["conf"] = 1
+			nomi.append(u["id"])
+	if not nomi.is_empty():
+		dlog("Pattuglia tedesca dalla %s: in confusione %s." % [nome_pos(pid), ", ".join(nomi)], "danno")
+
+func artiglieria_wn(pid: String, c: Dictionary) -> void:
+	var u0: Dictionary = s["de"][pid]["u"]
+	if u0["k"] != "wn" or not def_tedeschi["wn"][u0["i"]]["cal"] in ["75", "88"]: return
+	var sett = settore_pos(pid)
+	var gruppi = [[], [], [], []]
+	for u in s["us"]:
+		if leader(u) or simbolo(u) != c["bersaglio"]: continue
+		var sp: bool = u["dove"] == "mappa" and mappa.spiaggia(u["hex"])
+		var bx: bool = u["dove"] == "box"
+		if sp and fanteria(u): gruppi[0].append(u)
+		elif sp: gruppi[1].append(u)
+		elif bx and not fanteria(u): gruppi[2].append(u)
+		elif bx: gruppi[3].append(u)
+	for g in gruppi:
+		if g.is_empty(): continue
+		g.sort_custom(func(a, b):
+			var sa = (mappa.settore(a["hex"]) if a["dove"] == "mappa" else mappa.box[a["box"]]["s"]) == sett
+			var sb = (mappa.settore(b["hex"]) if b["dove"] == "mappa" else mappa.box[b["box"]]["s"]) == sett
+			if sa != sb: return sa
+			return passi_rimasti(a) > passi_rimasti(b))
+		dlog("L'artiglieria della %s colpisce." % nome_pos(pid), "danno")
+		s["art_settore"][sett] = true
+		perdi_passo(g[0], "artiglieria da %s" % nome_pos(pid))
+		return
+
+func imboscata(pid: String, c: Dictionary) -> void:
+	var campo = mappa.campo(pid)
+	var base: String = mappa.posizioni[pid]["hex"][0]
+	var cand: Array = []
+	for h in campo:
+		for u in combattenti_in(h):
+			if simbolo(u) == c["bersaglio"]:
+				cand.append({"u": u, "liv": int(campo[h]), "d": Mappa.distanza(h, base)})
+	if cand.is_empty(): return
+	cand.sort_custom(func(a, b):
+		var ia = a["liv"] == 3; var ib = b["liv"] == 3
+		if ia != ib: return ia
+		if a["d"] != b["d"]: return a["d"] < b["d"]
+		return passi_rimasti(a["u"]) > passi_rimasti(b["u"]))
+	var k = cand[0]
+	if k["liv"] == 3:
+		dlog("Imboscata dalla %s!" % nome_pos(pid), "danno")
+		perdi_passo(k["u"], "imboscata")
+	elif k["u"]["conf"] == 0:
+		k["u"]["conf"] = 1
+		dlog("Imboscata dalla %s: %s in confusione." % [nome_pos(pid), k["u"]["id"]], "danno")
+
+## Esagoni del percorso di avanzata: quelli adiacenti a partenza e arrivo, più l'arrivo.
+func percorso_avanzata(da: String, a: String) -> Array:
+	var o: Array = []
+	var ha: String = mappa.posizioni[da]["hex"][0]
+	var hb: String = mappa.posizioni[a]["hex"][0]
+	for v in mappa.vicini(ha):
+		if Mappa.distanza(v, hb) <= 1 and v != hb: o.append(v)
+	o.append(hb)
+	return o
+
+func avanzata(pid: String, c: Dictionary) -> void:
+	var dests: Array = mappa.posizioni[pid].get("avanza", [])
+	var dest = ""
+	for d in dests:
+		if not occupata(d):
+			dest = d
+			break
+	var de: Dictionary = s["de"][pid]
+	var nel_campo = not us_nel_campo(pid).is_empty()
+	var div: int = int(def_tedesca(pid).get("div", 716))
+	var con_dm = not de["dm"].is_empty()
+	if dest == "":
+		if nel_campo: _spara(pid, c)
+		return
+	var tenta = (not nel_campo) or (de["u"]["riv"] and div == 352 and con_dm) or (not de["u"]["riv"] and con_dm)
+	if not tenta:
+		if nel_campo and (div == 716 or not con_dm): _spara(pid, c)
+		return
+	var perc = percorso_avanzata(pid, dest)
+	var difensori: Array = []
+	for h in perc:
+		for u in combattenti_in(h):
+			if (not fanteria(u) and tipo(u) != "carro") or simbolo(u) == c["bersaglio"]:
+				if u["conf"] == 0: u["conf"] = 1
+			if u["conf"] == 0: difensori.append(u)
+	var forza = 0
+	for u in difensori:
+		var f = attacco(u)
+		if mappa.edifici(u["hex"]) or mappa.terreno(u["hex"]) == "bocage": f *= 2
+		if u["eroe"] >= 0 and not u["ispirato"]: f += 1
+		forza += f
+	if forza >= 7:
+		dlog("L'avanzata tedesca dalla %s verso la %s è respinta (difesa US %d)." % [nome_pos(pid), nome_pos(dest), forza], "tedesco")
+		return
+	if not difensori.is_empty():
+		difensori.sort_custom(func(a, b): return passi_rimasti(a) > passi_rimasti(b))
+		perdi_passo(difensori[0], "avanzata tedesca")
+	var hb: String = mappa.posizioni[dest]["hex"][0]
+	for u in unita_in(hb):
+		var fuga = mappa.vicini(hb).filter(func(v): return not v in perc and not tedesco_in(v) and v != mappa.posizioni[pid]["hex"][0])
+		if fuga.is_empty(): elimina(u, "travolta dall'avanzata tedesca")
+		else: u["hex"] = fuga[0]
+	_sposta_tedesco(pid, dest)
+	dlog("I tedeschi avanzano dalla %s alla %s." % [nome_pos(pid), nome_pos(dest)], "tedesco")
+
+# ---------------------------------------------------------------- eventi della modalità estesa
+func navale_inatteso(par: Dictionary) -> void:
+	var c = carta(pesca())
+	var pid: String = par[c["bersaglio"]]
+	if not mappa.posizioni.has(pid):
+		for x in mappa.posizioni:
+			if mappa.posizioni[x].get("gruppo", "") == pid or x.begins_with(pid):
+				pid = x
+				break
+	dlog("Il fuoco navale cade sulla %s." % nome_pos(pid), "evento")
+	if occupata(pid):
+		s["de"][pid]["conf"] = true
+		s["de"][pid]["dm"] = {}
+		return
+	var h: String = mappa.posizioni[pid]["hex"][0]
+	var us = combattenti_in(h)
+	if us.is_empty(): return
+	var c2 = carta(pesca())
+	for u in us:
+		if simbolo(u) == c2["bersaglio"]:
+			perdi_passo(u, "fuoco navale amico")
+			return
+
+func tedeschi_nascosti(par: Array) -> void:
+	var nascosti = {}
+	for pid in pos_attive():
+		if mappa.posizioni[pid]["tipo"] == "R" and not s["de"][pid]["u"]["riv"]:
+			nascosti[mappa.posizioni[pid]["hex"][0]] = true
+	for u in sulla_mappa():
+		if leader(u) or not simbolo(u) in par: continue
+		if mappa.vicini(u["hex"]).any(func(v): return nascosti.has(v)):
+			if u["conf"] == 0:
+				u["conf"] = 1
+				dlog("%s in confusione: tedeschi nascosti." % u["id"], "danno")
+
+# ---------------------------------------------------------------- scenario «Oltre la spiaggia» (21)
+func prepara_oltre() -> void:
+	s["turno"] = 17
+	s["razzi_sparati"] = true
+	# tedeschi
+	for id in s["de"]: s["de"][id] = {"u": {}, "dm": {}, "conf": false}
+	var art88: Array = []; var art75: Array = []; var altre: Array = []; var razzi = -1
+	for i in def_tedeschi["wn"].size():
+		var c: String = def_tedeschi["wn"][i]["cal"]
+		if c == "88": art88.append(i)
+		elif c == "75": art75.append(i)
+		elif c == "razzi": razzi = i
+		else: altre.append(i)
+	art88 = _mescola(art88); art75 = _mescola(art75); altre = _mescola(altre)
+	var piazza = {"WN72S": art88[0], "WN69": razzi}
+	var a3 = ["WN62S", "WN65S", "WN68S"]
+	for k in 3: piazza[a3[k]] = art75[k]
+	var n8 = ["WN62N", "WN65N", "WN67", "WN66N", "WN66S", "WN68N", "WN71", "WN72N"]
+	for k in 8: piazza[n8[k]] = altre[k]
+	for id in piazza: s["de"][id]["u"] = {"k": "wn", "i": piazza[id], "riv": false}
+	s["wn_elim"] = altre.slice(8)
+	var wn_dm = _mescola(range(def_tedeschi["dm"]["wn"].size()))
+	var k2 = 0
+	for id in ["WN62S", "WN65S", "WN66S", "WN67", "WN68S", "WN69", "WN72N", "WN72S"]:
+		s["de"][id]["dm"] = {"p": "wn", "i": wn_dm[k2], "riv": false}
+		k2 += 1
+	s["pool"]["wn"] = [wn_dm[k2]]
+	var div = _mescola(range(def_tedeschi["rinforzi"]["D"].size()))
+	var tat = _mescola(range(def_tedeschi["rinforzi"]["T"].size()))
+	var unita_r: Array = []
+	for i in 6: unita_r.append(["D", div[i]])
+	for i in 6: unita_r.append(["T", tat[i]])
+	unita_r = _mescola(unita_r)
+	s["pool"]["D"] = div.slice(6).map(func(x): return ["D", x])
+	s["pool"]["T"] = []
+	var mob = _mescola(range(def_tedeschi["dm"]["mobile"].size()))
+	s["pool"]["meyer_dm"] = mob.slice(0, 4)
+	s["pool"]["mobile"] = mob.slice(4)
+	s["pool"]["edificio"] = _mescola(range(def_tedeschi["dm"]["edificio"].size()))
+	var posti = ["A3D", "A4D", "A7", "C2D", "C4D", "C6", "D1D", "E5", "F1D", "G1", "G2D", "G6"]
+	for k in posti.size():
+		var pid: String = posti[k].trim_suffix("D")
+		s["de"][pid]["u"] = {"k": unita_r[k][0], "i": unita_r[k][1], "riv": false}
+		if posti[k].ends_with("D"):
+			s["de"][pid]["dm"] = _dm_per(pid)
+	# unità US
+	var pos_us = {"A/1/16": ["1115", 0, -1], "B/1/16": ["1114", 0, -1], "C/1/16": ["0916", 1, -1], "D/1/16": ["0814", 1, -1],
+		"E/2/16": ["1213", 2, 1], "F/2/16": ["1110", 2, 1], "G/2/16": ["1313", 2, -1], "H/2/16": ["0813", 2, -1],
+		"I/3/16": ["1008", 0, -1], "K/3/16": ["0807", 1, -1], "L/3/16": ["0908", 1, 1], "M/3/16": ["0809", 1, -1],
+		"16 HQ": ["1014", 0, -1], "Gen. Wyman": ["0814", 0, -1],
+		"B/1/116": ["1028", 2, -1], "C/1/116": ["0830", 0, -1], "D/1/116": ["0726", 1, -1], "E/2/116": ["1113", 2, -1],
+		"F/2/116": ["1119", 2, 29], "G/2/116": ["0926", 2, -1], "H/2/116": ["0819", 1, -1], "I/3/116": ["1020", 0, -1],
+		"K/3/116": ["0920", 0, -1], "L/3/116": ["1119", 0, -1], "M/3/116": ["0919", 0, 29], "116 HQ": ["0926", 0, -1],
+		"Gen. Cota": ["0830", 0, -1], "C/2R": ["0533", 1, -1], "A-B/2R": ["0728", 1, -1]}
+	var veicoli = {"1/B/741": 1, "2/A/741": 1, "1/A/741": 1, "1-2/397": 1, "7FA": 2, "A-B/197": 1,
+		"1/A/743": 1, "1/B/743": 0, "2/B/743": 1, "2/C/743": 0, "5-6/397": 1, "58AFA": 1, "C-D/467": 1}
+	var media_e: Array = []
+	var media_w: Array = []
+	for h in mappa.media_set:
+		if mappa.settore(h) == "E": media_e.append(h)
+		else: media_w.append(h)
+	var espo = func(h: String) -> int:
+		var t = 0
+		for pid in pos_attive():
+			t += int(mappa.campo(pid).get(h, 0))
+		return t
+	media_e.sort_custom(func(a, b): return espo.call(a) < espo.call(b))
+	media_w.sort_custom(func(a, b): return espo.call(a) < espo.call(b))
+	var eroi_usati = {"1": 0, "29": 0}
+	for u in s["us"]:
+		var d = defu(u)
+		if pos_us.has(u["id"]):
+			var v: Array = pos_us[u["id"]]
+			u["dove"] = "mappa"; u["hex"] = v[0]; u["passo"] = v[1]
+			if v[2] > 0:
+				var kd = str(u["div"])
+				u["eroe"] = s["eroi"][kd].pop_front()
+			if u["id"] == "E/2/116": u["cmd"] = 1
+			if regolare(u) and passi_rimasti(u) == 1: _conta_perdita(u)
+		elif veicoli.has(u["id"]):
+			var lista: Array = media_e if u["div"] == 1 else media_w
+			u["dove"] = "mappa"; u["passo"] = veicoli[u["id"]]
+			u["hex"] = lista[0]
+			if combattenti_in(lista[0]).size() >= 1: lista.pop_front()
+		elif int(d["turno"]) == 16:
+			u["dove"] = "traccia"; u["arrivo"] = 16
+		elif int(d["turno"]) >= 17:
+			pass
+		else:
+			u["dove"] = "rimossa"
+	var a116 = unita("A/1/116")
+	if not a116.is_empty():
+		a116["dove"] = "eliminata"
+		_conta_perdita(a116)
+	for u in s["us"]:
+		if u["dove"] == "traccia" and u["arrivo"] == 16:
+			u["arrivo"] = 17
+			metti_in_box(u)
+	for h in ["0612", "0613", "0614", "0615", "0616", "0523", "0524", "0525", "0426"]:
+		s["bonificati"][h] = true

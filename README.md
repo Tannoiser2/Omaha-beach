@@ -10,8 +10,18 @@ Si gioca nel browser: https://tannoiser2.github.io/Omaha-beach/ (e nella ludotec
 
 - **Easy Fox** (introduttivo): solo il settore Est, la 1a Divisione e le sue unità fino al turno 10. Vittoria con 9 Punti Vittoria al turno 16.
 - **La prima ondata** (The First Wave): turni 1-16 su tutta la spiaggia, regole 1-13. Vittoria con 19 Punti Vittoria.
+- **D-Day at Omaha Beach**: la giornata intera, turni 1-32. Al turno 16 primo controllo (25 punti vittoria decisiva, 10 o meno
+  sconfitta decisiva), poi la modalità estesa fino alle 18:00 (vittoria da 40 punti).
+- **Oltre la spiaggia** (Beyond the Beach): turni 17-32 con la preparazione della regola 21 (vittoria da 45 punti).
 
-La modalità estesa (turni 17-32, azioni tedesche, posti di comando e basi del Genio) non è ancora implementata.
+Modalità estesa (regole 14-20): due eventi per turno, tre azioni per Divisione, fuoco tedesco con limite doppio, azioni
+tedesche delle carte (rioccupazione, rifornimento, reimpiego, rinforzo, mortai, pattuglia, artiglieria delle WN, avanzata
+lungo le frecce, imboscata), movimento di due esagoni di fanteria e leader, carri sulle strade, sbarramento
+dell'artiglieria, Posti di Comando, Basi del Genio con gestione del traffico, bonifica di ciottoli, fossi, muri e strade
+minate, guarnigioni, uscita dalla mappa e punti vittoria finali della regola 20.3.
+
+Non ancora presenti: le varianti storiche opzionali (22) e i carri tedeschi (23). Il percorso delle avanzate tedesche
+usa gli esagoni adiacenti a partenza e arrivo (approssimazione dei diagrammi del regolamento).
 
 ## Cosa fa il gioco da solo
 
@@ -33,9 +43,10 @@ rimozione di confusione e scalate. Il pulsante «Gioca il turno per me» usa un 
 
 ## Mappa e materiali
 
-La mappa è la mappa alternativa di Michael Evans del modulo Tabletop Simulator, digitalizzata con gli script del
-lavoro preparatorio: griglia ricavata dai numeri degli esagoni, terreno, lati (dune, pendii, scogliere), le 18 WN e le
-74 posizioni di rinforzo con i loro colori, circa 900 punti di fuoco classificati (intenso, costante, sporadico) e
+La mappa è quella del modulo Tabletop Simulator, digitalizzata con gli script di `tools/estrazione`: griglia ricavata
+dai numeri degli esagoni, terreno, lati (dune, pendii, scogliere scalabili e a picco, ciottoli, argini, muri e fossi
+anticarro), strade principali, secondarie e minate, linea di confine dei settori, le 18 WN e le 74 posizioni di rinforzo
+con colori, punti VP e frecce di avanzata, circa 1000 punti di fuoco classificati (intenso, costante, sporadico) e
 assegnati alla posizione più vicina dello stesso colore, riquadri di sbarco con gli esagoni di bassa, media e alta marea.
 Le pedine sono quelle del modulo; le carte sono ridisegnate nel gioco con i testi degli eventi in italiano.
 
