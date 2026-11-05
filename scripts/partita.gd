@@ -540,6 +540,8 @@ func attacca(T: String, lista: Array, navale := false, logoramento := true) -> S
 				"gt": {"solo": "ted_dm", "dm_nasc": "us_conf", "dm_riv": "nulla"},
 				"d2": {"solo": "ted_conf", "dm_nasc": "ted_conf", "dm_riv": "ted_conf_logor"}}}
 		esito = tab[armi_ok][cf][col]
+		if esito == "dm_elim_conf" and estesa() and armi_ok and cf == "d2":
+			esito = "dm_elim_sconfitta"
 		match esito:
 			"rivela":
 				de["dm"]["riv"] = true
@@ -553,6 +555,10 @@ func attacca(T: String, lista: Array, navale := false, logoramento := true) -> S
 					righe.append("Si rivela il segnalino Incognita: forza %d, armi %s. Nuovo confronto." % [dd["forza"], ", ".join(dd["armi"]) if not dd["armi"].is_empty() else "nessuna"])
 					ripeti = true
 			"sconfitta":
+				_sconfitta(pid, righe)
+			"dm_elim_sconfitta":
+				de["dm"] = {}
+				righe.append("Il segnalino Incognita è eliminato.")
 				_sconfitta(pid, righe)
 			"dm_elim_conf":
 				de["dm"] = {}

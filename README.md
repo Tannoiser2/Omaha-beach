@@ -23,6 +23,15 @@ minate, guarnigioni, uscita dalla mappa e punti vittoria finali della regola 20.
 Non ancora presenti: le varianti storiche opzionali (22) e i carri tedeschi (23). Il percorso delle avanzate tedesche
 usa gli esagoni adiacenti a partenza e arrivo (approssimazione dei diagrammi del regolamento).
 
+## Tutorial e aiuto
+
+- **Tutorial guidato** (dal menu): la prima parte gioca i turni di Easy Fox spiegando passo passo mappa, maree, sbarco,
+  carte fuoco, azioni, riparo, dune, attacchi, sbarramenti, confusione, leader, fuoco navale, rinforzi e vittoria, con
+  compiti da svolgere ed esagoni evidenziati; la seconda parte spiega la modalità estesa su «Oltre la spiaggia».
+  I testi sono in `data/tutorial.json` (generati da `tools/estrazione/tutorial.py`).
+- **Aiuto in linea** (pulsante «Aiuto» o tasto F1): il regolamento completo in 18 capitoli con le tabelle originali del
+  gioco (`data/aiuto.json`, `assets/tabelle/`).
+
 ## Cosa fa il gioco da solo
 
 - Controlli sullo sbarco per settore con la carta Sbarco (derive, ritardi, perdite, mine sommerse dal turno 7) e sbarco

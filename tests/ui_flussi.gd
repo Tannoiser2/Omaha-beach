@@ -42,5 +42,5 @@ func _process(_d: float) -> bool:
 		main._salva_locale()
 		main._carica_locale()
 		print("ricaricata al turno ", main.g.s["turno"])
-		main._regole(); main._chiudi(); main._mostra_menu()
+		main._aiuto(-1); main._chiudi(); main._mostra_menu()
 	return n >= 5

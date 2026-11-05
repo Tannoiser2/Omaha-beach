@@ -35,6 +35,21 @@ var lbl_evento: Label
 var box_unita: VBoxContainer
 var registro_txt: RichTextLabel
 var lbl_hover: Label
+# tutorial e aiuto
+var tut: Dictionary = {}
+var tut_i := 0
+var tut_log0 := 0
+var tut_fatto := false
+var tut_flag := {}
+var tut_pannello: PanelContainer
+var tut_titolo: Label
+var tut_testo: RichTextLabel
+var tut_compito: Label
+var tut_avanti: Button
+var tut_indietro: Button
+var tut_evid := {}
+var tut_timer := 0.0
+var aiuto_dati: Array = []
 var btn_fine: Button
 var btn_navale: Button
 var chk_pila: CheckBox
@@ -215,7 +230,7 @@ func _costruisci_ui() -> void:
 	var riga3 = HBoxContainer.new()
 	riga3.add_child(_bottone("Salva online", _salva_online))
 	riga3.add_child(_bottone("Menu", _mostra_menu))
-	riga3.add_child(_bottone("Regole in breve", _regole))
+	riga3.add_child(_bottone("Aiuto", func(): _aiuto(-1)))
 	v.add_child(riga3)
 	# barra in basso a sinistra
 	var barra = PanelContainer.new()
@@ -371,6 +386,11 @@ func disegna(c: CanvasItem) -> void:
 	for h in g.s["bonificati"]:
 		var t = _t("bonificato")
 		if t: c.draw_texture_rect(t, Rect2(m.centro(h) + Vector2(-14, 26), Vector2(28, 28)), false)
+	# esagoni indicati dal tutorial
+	if not tut.is_empty():
+		var a = 0.55 + 0.35 * sin(Time.get_ticks_msec() / 250.0)
+		for h in tut_evid:
+			_bordo(c, h, Color(1.0, 0.85, 0.1, a), 6.0)
 	# bersagli dell'azione in corso
 	for h in bersagli:
 		_riempi(c, h, Color(0.9, 0.1, 0.1, 0.30))
@@ -468,6 +488,10 @@ func _pedina(c: CanvasItem, u: Dictionary, r: Rect2) -> void:
 
 # ================================================================ input sulla mappa
 func _unhandled_input(ev: InputEvent) -> void:
+	if ev is InputEventKey and ev.pressed and (ev as InputEventKey).keycode == KEY_F1:
+		if finestra.get_child_count() > 0: _chiudi()
+		else: _aiuto(-1)
+		return
 	if g.s.is_empty() or menu.visible: return
 	if ev is InputEventMouseButton:
 		var mb = ev as InputEventMouseButton
@@ -491,6 +515,7 @@ func _unhandled_input(ev: InputEvent) -> void:
 		if trascina:
 			var d = mm.position - ultimo_mouse
 			trascinato += d.length()
+			tut_flag["zoom"] = true
 			cam.position -= d / cam.zoom.x
 			ultimo_mouse = mm.position
 		_aggiorna_hover(_al_mondo(mm.position))
@@ -504,6 +529,7 @@ func _al_mondo(p: Vector2) -> Vector2:
 
 func _zoom(f: float, schermo: Vector2) -> void:
 	var prima = _al_mondo(schermo)
+	tut_flag["zoom"] = true
 	var z: float = clamp(cam.zoom.x * f, 0.2, 2.5)
 	cam.zoom = Vector2(z, z)
 	var dopo = _al_mondo(schermo)
@@ -952,11 +978,17 @@ func _mostra_menu() -> void:
 	r.add_child(_bottone("Riprendi online", func(): _carica_online(le.text.strip_edges().to_upper(), esito)))
 	v.add_child(r)
 	v.add_child(esito)
-	v.add_child(_bottone("Regole in breve", _regole))
+	var rt = HBoxContainer.new()
+	rt.add_child(_bottone("Tutorial guidato: turni 1-16", func(): _avvia_tutorial("parte1")))
+	rt.add_child(_bottone("Tutorial: modalità estesa", func(): _avvia_tutorial("parte2")))
+	v.add_child(rt)
+	v.add_child(_bottone("Aiuto e regolamento completo", func(): _aiuto(-1)))
 
-func _nuova(scen: String) -> void:
+func _nuova(scen: String, seme := 0) -> void:
+	if seme == 0:
+		_chiudi_tutorial()
 	registro_txt.clear()
-	g.nuova(scen)
+	g.nuova(scen, seme)
 	menu.visible = false
 	sel = {}
 	cam.position = g.mappa.centro("0712" if scen == "easy_fox" else "0718")
@@ -1025,22 +1057,239 @@ func _carica_online(codice: String, esito: Label) -> void:
 	g.importa(d)
 	_dopo_caricamento()
 
-func _regole() -> void:
-	var v = _pannello_finestra("Regole in breve", 700)
-	var testo = """Ogni turno (15 minuti) il gioco risolve da solo: controlli sullo sbarco (carta Sbarco per settore: derive, ritardi, perdite, mine), sbarco sulla spiaggia secondo la marea, evento, fuoco tedesco (carta Fuoco per settore: sparano le posizioni dei colori indicati; quadrato doppio = serve il segnalino Incognita; stella = può colpire i leader; carro = colpisce i corazzati), artiglieria tedesca (dal turno 4) e bonifica degli ostacoli del Genio.
+func _process(delta: float) -> void:
+	if tut.is_empty(): return
+	tut_timer += delta
+	if tut_timer < 0.25: return
+	tut_timer = 0.0
+	if not tut_evid.is_empty(): tavolo.queue_redraw()
+	if not tut_fatto and _compito_fatto():
+		tut_fatto = true
+		_aggiorna_tutorial()
 
-Poi tocca a te. Ogni Divisione ha 2 azioni per turno; ogni unità può fare una sola azione. Sono gratuite le azioni dei Ranger, delle unità con Eroe o Ispirate, dei leader, delle unità adiacenti o nello stesso esagono di un HQ o di un Generale (finché il leader non si muove), il riparo della fanteria sulla spiaggia (movimento verso un esagono più vicino al riparo, in azzurro) e la rimozione dei segnalini Confusione e Scalata.
+func _avvia_tutorial(parte: String) -> void:
+	var dati = Gioco._json("res://data/tutorial.json")
+	tut = dati[parte]
+	tut_i = 0
+	_nuova(tut["scenario"], int(tut["seme"]))
+	if tut_pannello == null:
+		_costruisci_tutorial()
+	tut_pannello.visible = true
+	_entra_passo()
 
-Movimento: un esagono. La fanteria supera le dune con una scalata (arancio) che richiede un turno in più per togliere il segnalino; le scogliere scalabili richiedono tre turni. Carri, artiglieria e contraerea restano sulla spiaggia e sulle valli. Muovere tra due esagoni adiacenti a una posizione e nel suo campo di fuoco è un'infiltrazione: si pesca una carta e si rischia un punto forza.
+func _costruisci_tutorial() -> void:
+	tut_pannello = PanelContainer.new()
+	tut_pannello.anchor_top = 1.0; tut_pannello.anchor_bottom = 1.0
+	tut_pannello.offset_left = 8; tut_pannello.offset_right = 600
+	tut_pannello.offset_top = -420; tut_pannello.offset_bottom = -54
+	var sb = StyleBoxFlat.new()
+	sb.bg_color = Color(0.93, 0.91, 0.82, 0.97)
+	sb.border_color = Color(0.85, 0.65, 0.1)
+	sb.set_border_width_all(3)
+	sb.set_corner_radius_all(4)
+	sb.set_content_margin_all(12)
+	tut_pannello.add_theme_stylebox_override("panel", sb)
+	pannello.get_parent().add_child(tut_pannello)
+	pannello.get_parent().move_child(tut_pannello, finestra.get_index())
+	var v = VBoxContainer.new()
+	v.add_theme_constant_override("separation", 6)
+	tut_pannello.add_child(v)
+	tut_titolo = _label("", 22, f_titoli, Color(0.1, 0.35, 0.18))
+	v.add_child(tut_titolo)
+	tut_testo = RichTextLabel.new()
+	tut_testo.bbcode_enabled = true
+	tut_testo.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	tut_testo.add_theme_color_override("default_color", Color(0.12, 0.12, 0.1))
+	tut_testo.add_theme_font_override("normal_font", f_testo)
+	tut_testo.add_theme_font_override("bold_font", _grassetto())
+	tut_testo.add_theme_font_size_override("normal_font_size", 16)
+	tut_testo.add_theme_font_size_override("bold_font_size", 16)
+	v.add_child(tut_testo)
+	tut_compito = _label("", 16, f_testo, Color(0.75, 0.35, 0.0))
+	v.add_child(tut_compito)
+	var r = HBoxContainer.new()
+	tut_indietro = _bottone("Indietro", func(): _vai_passo(-1))
+	r.add_child(tut_indietro)
+	tut_avanti = _bottone("Avanti", func(): _vai_passo(1))
+	r.add_child(tut_avanti)
+	var sp = Control.new()
+	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	r.add_child(sp)
+	r.add_child(_bottone("Chiudi il tutorial", _chiudi_tutorial))
+	v.add_child(r)
 
-Attacco: serve almeno una fanteria adiacente; si sommano le forze e le armi. Se hai tutte le armi richieste dall'unità tedesca e dal suo segnalino Incognita usi la parte alta della tabella, altrimenti quella bassa. L'Eroe sostituisce un'arma o aggiunge 1 alla forza. Il fuoco navale aggiunge 9 e le armi AR, DE, NA. Aggiramento (FL): attacca da due esagoni non adiacenti tra loro.
+func _chiudi_tutorial() -> void:
+	tut = {}
+	tut_evid = {}
+	if tut_pannello != null:
+		tut_pannello.visible = false
+	if tavolo != null: tavolo.queue_redraw()
 
-Alla marea media (turno 7) le unità rimaste sulla linea di bassa marea annegano; idem per la linea media all'alta marea. Più di due unità per esagono a fine fase: le eccedenti sono eliminate.
+func _vai_passo(d: int) -> void:
+	var n: int = tut["passi"].size()
+	if tut_i + d >= n:
+		_chiudi_tutorial()
+		return
+	tut_i = clampi(tut_i + d, 0, n - 1)
+	_entra_passo()
 
-Dal turno 17 (scenari D-Day e Oltre la spiaggia) vale la modalità estesa: due eventi per turno, tre azioni per Divisione, la fanteria e i leader si muovono di due esagoni (uno solo entrando nel bocage senza strada o sotto fuoco intenso o costante), i carri corrono lungo le strade (4 esagoni sulle principali, 2 sulle secondarie), l'artiglieria fa fuoco di sbarramento con un HQ. Le lettere sulle carte fuoco fanno compiere ai tedeschi le loro azioni: F fuoco, R rioccupazione/rifornimento/reimpiego/rinforzo, M mortai, P pattuglia, A avanzata/imboscata/artiglieria. Gli HQ fuori dal fuoco diventano Posti di Comando con raggio crescente; le Basi del Genio sulla spiaggia aprono ciottoli, fossi, muri e strade minate, permettono il movimento gratuito dalla spiaggia e piazzano guarnigioni nelle posizioni vuote. La sconfitta catastrofica arriva a 14 compagnie perse. Al turno 32 contano le posizioni VP, le valli aperte (4), i mezzi sulle alture, i punti usciti dalla mappa dalle uscite A-G, meno le WN non controllate e il Kampfgruppe Meyer non impiegato: servono 40 punti (45 in Oltre la spiaggia). Nello scenario D-Day al turno 16 si vince subito con 25 punti e si perde con 10 o meno.
+func _entra_passo() -> void:
+	var p: Dictionary = tut["passi"][tut_i]
+	tut_log0 = g.s["log"].size()
+	tut_flag = {}
+	tut_fatto = not p.has("compito")
+	if p.has("compito") and p["compito"]["tipo"] == "turno":
+		tut_flag["turno0"] = g.s["turno"]
+	if p.has("camera"):
+		cam.position = g.mappa.centro(p["camera"])
+	if p.has("zoom"):
+		cam.zoom = Vector2(p["zoom"], p["zoom"])
+	tut_evid = _evidenzia(p.get("evid", ""))
+	_aggiorna_tutorial()
+	tavolo.queue_redraw()
 
-Vittoria: al turno 16 conta 1 punto per ogni esagono WN controllato, 1 per ogni posizione di rinforzo, 5 per ogni valle (draw). Servono 19 punti (9 in Easy Fox). Perdi subito se otto compagnie di fanteria di una Divisione sono ridotte a un punto o eliminate.
+func _aggiorna_tutorial() -> void:
+	var p: Dictionary = tut["passi"][tut_i]
+	tut_titolo.text = "%s  (%d/%d)" % [p["titolo"], tut_i + 1, tut["passi"].size()]
+	tut_testo.text = p["testo"]
+	if p.has("compito"):
+		tut_compito.visible = true
+		tut_compito.text = ("Fatto: " if tut_fatto else "Compito: ") + p["compito"]["testo"]
+		tut_compito.add_theme_color_override("font_color", Color(0.1, 0.5, 0.2) if tut_fatto else Color(0.75, 0.35, 0.0))
+	else:
+		tut_compito.visible = false
+	tut_indietro.disabled = tut_i == 0
+	var ultimo = tut_i == tut["passi"].size() - 1
+	tut_avanti.text = "Fine" if ultimo else ("Avanti" if tut_fatto else "Salta")
 
-Comandi: clic per selezionare, clic su un esagono colorato per muovere, clic destro per annullare, trascina per spostare la mappa, rotellina per lo zoom. Passa il mouse su una posizione tedesca per vederne il campo di fuoco."""
-	v.add_child(_label(testo, 15))
-	v.add_child(_bottone("Chiudi", _chiudi))
+func _compito_fatto() -> bool:
+	var p: Dictionary = tut["passi"][tut_i]
+	if not p.has("compito"): return true
+	var c: Dictionary = p["compito"]
+	match c["tipo"]:
+		"zoom": return tut_flag.get("zoom", false)
+		"hover": return hover_pid != ""
+		"sel_box": return not sel.is_empty() and sel["dove"] == "box"
+		"sel_mappa": return not sel.is_empty() and sel["dove"] == "mappa"
+		"aiuto": return tut_flag.get("aiuto", false)
+		"turno": return g.s["turno"] > int(tut_flag.get("turno0", 99))
+		"log":
+			var l: Array = g.s["log"]
+			for i in range(min(tut_log0, l.size()), l.size()):
+				if String(l[i][1]).find(c["cerca"]) >= 0: return true
+			return false
+	return false
+
+func _evidenzia(cod: String) -> Dictionary:
+	var o = {}
+	var m = g.mappa
+	if cod == "": return o
+	if cod == "media":
+		for h in m.media_set: o[h] = true
+	elif cod == "bassa":
+		for h in m.bassa_set: o[h] = true
+	elif cod == "box":
+		for b in m.box:
+			if not g.easy() or m.box[b]["s"] == "E": o[m.box[b]["box"]] = true
+	elif cod.begins_with("pos:"):
+		for h in m.posizioni[cod.substr(4)]["hex"]: o[h] = true
+	elif cod == "us":
+		for u in g.sulla_mappa(): o[u["hex"]] = true
+	elif cod == "dune":
+		for k in m.lati:
+			if m.lati[k] == "B":
+				for h in k.split("|"):
+					if m.basso(h): o[h] = true
+	elif cod == "valli":
+		for d in m.draws:
+			for h in m.draws[d]: o[h] = true
+	elif cod == "uscite":
+		for h in m.esagoni:
+			if m.esagoni[h].has("uscita"): o[h] = true
+	if g.easy():
+		for h in o.keys():
+			if m.settore(h) == "W": o.erase(h)
+	return o
+
+# ================================================================ aiuto in linea
+var _f_grassetto: FontVariation
+
+func _grassetto() -> Font:
+	if _f_grassetto == null:
+		_f_grassetto = FontVariation.new()
+		_f_grassetto.base_font = f_testo
+		_f_grassetto.variation_opentype = {TextServerManager.get_primary_interface().name_to_tag("wght"): 650}
+	return _f_grassetto
+
+func _aiuto(cap: int) -> void:
+	tut_flag["aiuto"] = true
+	if aiuto_dati.is_empty():
+		aiuto_dati = Gioco._json("res://data/aiuto.json")
+	_pulisci(finestra)
+	finestra.mouse_filter = Control.MOUSE_FILTER_STOP
+	var velo = ColorRect.new()
+	velo.color = Color(0, 0, 0, 0.5)
+	velo.set_anchors_preset(Control.PRESET_FULL_RECT)
+	finestra.add_child(velo)
+	var p = PanelContainer.new()
+	p.set_anchors_preset(Control.PRESET_FULL_RECT)
+	p.offset_left = 40; p.offset_top = 30; p.offset_right = -40; p.offset_bottom = -30
+	finestra.add_child(p)
+	var v = VBoxContainer.new()
+	p.add_child(v)
+	var testa = HBoxContainer.new()
+	var tl = _label("AIUTO E REGOLAMENTO", 26, f_titoli, C_KAKI)
+	tl.autowrap_mode = TextServer.AUTOWRAP_OFF
+	testa.add_child(tl)
+	var sp = Control.new()
+	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	testa.add_child(sp)
+	testa.add_child(_bottone("Chiudi (F1)", _chiudi))
+	v.add_child(testa)
+	var h = HSplitContainer.new()
+	h.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(h)
+	var sc_ind = ScrollContainer.new()
+	sc_ind.custom_minimum_size = Vector2(260, 0)
+	sc_ind.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	h.add_child(sc_ind)
+	var ind = VBoxContainer.new()
+	ind.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sc_ind.add_child(ind)
+	var sc = ScrollContainer.new()
+	sc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	h.add_child(sc)
+	var corpo = VBoxContainer.new()
+	corpo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	corpo.add_theme_constant_override("separation", 10)
+	sc.add_child(corpo)
+	var mostra = func(i: int):
+		_pulisci(corpo)
+		var d: Dictionary = aiuto_dati[i]
+		corpo.add_child(_label(d["titolo"], 24, f_titoli, Color(0.25, 0.75, 0.4)))
+		var rt = RichTextLabel.new()
+		rt.bbcode_enabled = true
+		rt.fit_content = true
+		rt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		rt.add_theme_font_override("normal_font", f_testo)
+		rt.add_theme_font_override("bold_font", _grassetto())
+		rt.add_theme_font_size_override("normal_font_size", 17)
+		rt.add_theme_font_size_override("bold_font_size", 17)
+		rt.text = d["testo"]
+		corpo.add_child(rt)
+		for nome in d["tabelle"]:
+			var tr = TextureRect.new()
+			tr.texture = load("res://assets/tabelle/%s.jpg" % nome)
+			tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			if tr.texture:
+				var w = min(1000.0, float(tr.texture.get_width()) * 1.1)
+				tr.custom_minimum_size = Vector2(w, w * tr.texture.get_height() / tr.texture.get_width())
+			corpo.add_child(tr)
+		sc.scroll_vertical = 0
+	for i in aiuto_dati.size():
+		var b = _bottone(aiuto_dati[i]["titolo"], func(): mostra.call(i))
+		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		ind.add_child(b)
+	mostra.call(max(cap, 0))

@@ -42,7 +42,7 @@ func _process(_d: float) -> bool:
 				break
 	if n == 32: _scatta("attacco")
 	if n == 34:
-		main._chiudi(); main._regole()
+		main._chiudi(); main._aiuto(-1)
 	if n == 37: _scatta("regole")
 	if n == 39: return true
 	return false
