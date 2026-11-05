@@ -1627,15 +1627,31 @@ func imboscata(pid: String, c: Dictionary) -> void:
 		k["u"]["conf"] = 1
 		dlog("Imboscata dalla %s: %s in confusione." % [nome_pos(pid), k["u"]["id"]], "danno")
 
-## Esagoni del percorso di avanzata: quelli adiacenti a partenza e arrivo, più l'arrivo.
+## Percorso di avanzata (16.82, i tre diagrammi del regolamento).
+## Distanza 1 o linea retta di due esagoni: tutti gli esagoni con distanza(partenza) + distanza(arrivo) <= d + 1.
+## Due esagoni «a cavallo di un vertice» (due vicini in comune): i due vicini comuni, l'arrivo e i suoi due vicini laterali.
 func percorso_avanzata(da: String, a: String) -> Array:
-	var o: Array = []
 	var ha: String = mappa.posizioni[da]["hex"][0]
 	var hb: String = mappa.posizioni[a]["hex"][0]
-	for v in mappa.vicini(ha):
-		if Mappa.distanza(v, hb) <= 1 and v != hb: o.append(v)
+	var d = Mappa.distanza(ha, hb)
+	var vicini_a = Mappa.vicini_raw(ha)
+	var vicini_b = Mappa.vicini_raw(hb)
+	var comuni = vicini_a.filter(func(x): return x in vicini_b)
+	var o: Array = []
+	if d == 2 and comuni.size() == 2:
+		o = comuni.duplicate()
+		for v in vicini_b:
+			if Mappa.distanza(v, ha) == 2: o.append(v)
+	else:
+		var cand = {}
+		for v in vicini_a + vicini_b: cand[v] = true
+		for v in vicini_b:
+			for w in Mappa.vicini_raw(v): cand[w] = true
+		for h in cand:
+			if h == ha or h == hb: continue
+			if Mappa.distanza(h, ha) + Mappa.distanza(h, hb) <= d + 1: o.append(h)
 	o.append(hb)
-	return o
+	return o.filter(func(x): return mappa.esagoni.has(x))
 
 func avanzata(pid: String, c: Dictionary) -> void:
 	var dests: Array = mappa.posizioni[pid].get("avanza", [])
