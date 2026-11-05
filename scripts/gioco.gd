@@ -48,7 +48,7 @@ func dlog(t: String, tipo := "") -> void:
 	registro.emit(t, tipo)
 
 # ---------------------------------------------------------------- nuova partita
-func nuova(scenario := "prima_ondata", seme := 0) -> void:
+func nuova(scenario := "prima_ondata", seme := 0, varianti := {}) -> void:
 	if seme == 0:
 		seme = int(Time.get_unix_time_from_system() * 1000) % 2000000000
 	rng.seed = seme
@@ -57,7 +57,11 @@ func nuova(scenario := "prima_ondata", seme := 0) -> void:
 		"flag": {}, "perdite": {"1": [], "29": []}, "eroi": {"1": [0, 1, 2, 3, 4], "29": [0, 1, 2, 3, 4]},
 		"azioni": {"1": 2, "29": 2}, "attaccati": {}, "sbarrati": {}, "fine": "", "vp": 0, "razzi_sparati": false,
 		"comando": {}, "leader_mossi": {}, "conta_carte": 0, "wn_elim": [], "basi": [], "cp": {}, "guarnigioni": {},
-		"usciti": [], "art_settore": {}, "genio_fatto": {}}
+		"usciti": [], "art_settore": {}, "genio_fatto": {}, "varianti": varianti.duplicate(), "carri": {}, "carri_entrati": 0,
+		"mobili_ripristinati": false}
+	if scenario in ["easy_fox", "prima_ondata"]:
+		s["varianti"].erase("reazione")
+		s["varianti"].erase("corazzati")
 	var easy = scenario == "easy_fox"
 	# --- unità US
 	for i in def_unita.size():
@@ -135,13 +139,72 @@ func nuova(scenario := "prima_ondata", seme := 0) -> void:
 		s["art"].append(a.duplicate())
 	# carte (la 55 è il riepilogo e non entra nel mazzo)
 	s["mazzo"] = _mescola(range(1, 55))
+	s["pool"]["A"] = _mescola(range(def_tedeschi["rinforzi"]["A"].size()))
+	s["pool"]["corazzati"] = _mescola(range(def_tedeschi["dm"]["corazzati"].size()))
 	if scenario == "oltre":
 		prepara_oltre()
+	prepara_varianti()
+	sync_carri()
 	dlog("Nuova partita: %s." % nome_scenario(), "titolo")
+	for v in s["varianti"]:
+		dlog("Variante: %s." % NOMI_VARIANTI.get(v, v), "info")
 	inizia_turno()
 
 func nome_scenario() -> String:
 	return {"easy_fox": "Easy Fox (introduttivo)", "prima_ondata": "La prima ondata", "dday": "D-Day at Omaha Beach", "oltre": "Oltre la spiaggia"}.get(s["scenario"], "")
+
+const NOMI_VARIANTI := {"bombardamento": "bombardamento alleato efficace (22.1, -10 PV)", "carri_sicuri": "i carri della prima ondata sono al sicuro (22.2, -5 PV)",
+	"ranger": "i Ranger rinforzano Pointe du Hoc (22.3, +5 PV)", "reazione": "reazione tedesca migliorata (22.4, +5 PV)", "corazzati": "carri tedeschi (23)"}
+
+func variante(v: String) -> bool:
+	return s.get("varianti", {}).has(v)
+
+func modifica_varianti() -> int:
+	var m = 0
+	if variante("bombardamento"): m -= 10
+	if variante("carri_sicuri"): m -= 5
+	if variante("ranger"): m += 5
+	if variante("reazione"): m += 5
+	if variante("corazzati"): m += int(s.get("carri_entrati", 0))
+	return m
+
+func prepara_varianti() -> void:
+	if variante("ranger"):
+		for u in s["us"]:
+			if tipo(u) == "ranger" and u["id"] != "C/2R":
+				u["dove"] = "rimossa"
+	if variante("reazione"):
+		for i in s["pool"]["M"]:
+			s["pool"]["D"].append(["M", i])
+		s["pool"]["M"] = []
+		s["pool"]["D"] = _mescola(s["pool"]["D"])
+		s["pool"]["mobile"] = _mescola(s["pool"]["mobile"] + s["pool"]["meyer_dm"])
+		s["pool"]["meyer_dm"] = []
+	if variante("bombardamento") and s["turno"] == 1:
+		s["turno"] = 4
+		for u in s["us"]:
+			if u["dove"] != "traccia": continue
+			if u["id"] == "62AFA":
+				u["arrivo"] = 26
+			elif u["arrivo"] < 16:
+				u["arrivo"] += 3
+			else:
+				u["arrivo"] += 1
+			if u["arrivo"] > ultimo_turno():
+				u["dove"] = "rimossa"
+		var c1 = carta(pesca())
+		var c2 = carta(pesca())
+		var col1: Array = c1["fuoco"].map(func(q): return q["col"])
+		var col2: Array = c2["fuoco"].map(func(q): return q["col"])
+		for pid in mappa.posizioni:
+			if mappa.posizioni[pid]["tipo"] != "WN" or not occupata(pid): continue
+			var col = colore(pid)
+			if col in col1 and col in col2:
+				s["de"][pid] = {"u": {}, "dm": {}, "conf": false}
+			elif col in col1 or col in col2:
+				s["de"][pid]["conf"] = true
+				s["de"][pid]["dm"] = {}
+		dlog("Bombardamento prima dell'invasione: colpite le WN dei colori %s e %s." % [", ".join(col1), ", ".join(col2)], "evento")
 
 ## Turni 17-32: regole della modalità estesa (sezioni 14-20)
 func estesa() -> bool:
@@ -278,6 +341,8 @@ func settore_pos(pid: String) -> String:
 	return mappa.settore(mappa.posizioni[pid]["hex"][0])
 
 func nome_pos(pid: String) -> String:
+	if mappa.posizioni.has(pid) and mappa.posizioni[pid]["tipo"] == "K":
+		return "carro tedesco " + def_tedeschi["rinforzi"]["A"][int(s["de"][pid]["u"]["i"])]["id"] if not s["de"][pid]["u"].is_empty() else "carro tedesco"
 	if pid.begins_with("R"):
 		return "posizione " + pid.substr(1)
 	return pid
@@ -317,10 +382,12 @@ func inizia_turno() -> void:
 	if s["fine"] != "":
 		return
 	if estesa() and t < 32:
+		s["flag"]["secondo_evento"] = true
 		fase_evento()
+		s["flag"].erase("secondo_evento")
 		if s["fine"] != "":
 			return
-	if t >= 2:
+	if t >= 2 and not (variante("bombardamento") and t < 5):
 		fase_genio()
 	if estesa():
 		fase_genio_hq()
@@ -383,6 +450,12 @@ func fine_azioni() -> void:
 	# unità che escono dalla mappa sono già registrate; guarnigioni nelle posizioni sicure
 	if estesa():
 		aggiorna_guarnigioni()
+		for k in s["carri"]:
+			if s["de"].has(k) and not s["de"][k]["conf"] and s["carri"][k]["hex"] in mappa.fine_carri:
+				s["fine"] = "sconfitta"
+				s["fase"] = "fine_partita"
+				dlog("SCONFITTA DECISIVA: un carro tedesco ha raggiunto la spiaggia dalla valle (%s)." % s["carri"][k]["hex"], "finale")
+				return
 	# marea che sale (5.21)
 	if t == 7:
 		for u in sulla_mappa():
@@ -440,7 +513,10 @@ func fase_anfibia() -> void:
 			mina = c["mina"] and t >= 7 and t <= 22
 			dlog("Carta sbarco settore %s: n.%d (rombo %s, triangolo %s, cerchio %s)%s" % [_nome_sett(sett), n, c["sbarco"]["D"], c["sbarco"]["T"], c["sbarco"]["C"], ", mine!" if c["mina"] else ""], "carta")
 			for u in da_controllare:
-				_esito_sbarco(u, c["sbarco"][simbolo(u)], t)
+				var te = t
+				if variante("bombardamento") and t in [4, 5]: te = t - 2
+				if variante("carri_sicuri") and te == 1 and tipo(u) == "carro": te = 2
+				_esito_sbarco(u, c["sbarco"][simbolo(u)], te)
 		# sbarco sulla spiaggia
 		var sbarcati: Array = []
 		for b in box_di_settore(sett):
@@ -703,7 +779,7 @@ func esegui_evento(cod: String, par) -> void:
 				aggiungi_dm("E")
 				aggiungi_dm("W")
 		"MEYER":
-			if easy(): return
+			if easy() or variante("reazione"): return
 			for k in 4:
 				if s["pool"]["M"].is_empty(): break
 				var i: int = s["pool"]["M"].pop_back()
@@ -851,6 +927,17 @@ func _dm_per(pid: String) -> Dictionary:
 		pool = "edificio"
 	if pool == "edificio" and s["pool"]["edificio"].is_empty():
 		pool = "mobile"
+	if pool == "mobile" and s["pool"]["mobile"].is_empty() and variante("reazione") and not s["mobili_ripristinati"]:
+		s["mobili_ripristinati"] = true
+		var usati = {}
+		for x in s["de"]:
+			var d: Dictionary = s["de"][x]["dm"]
+			if not d.is_empty() and d["p"] == "mobile": usati[int(d["i"])] = true
+		var elim: Array = []
+		for i in def_tedeschi["dm"]["mobile"].size():
+			if not usati.has(i) and not i in s["pool"]["meyer_dm"]: elim.append(i)
+		s["pool"]["mobile"] = _mescola(elim).slice(0, 5)
+		dlog("I tedeschi riorganizzano le riserve: tornano cinque segnalini Incognita mobili.", "tedesco")
 	if s["pool"][pool].is_empty():
 		return {}
 	return {"p": pool, "i": s["pool"][pool].pop_back(), "riv": false}
@@ -860,7 +947,7 @@ func rinforzo_zona(z: String) -> void:
 	for pid in mappa.posizioni:
 		var p: Dictionary = mappa.posizioni[pid]
 		if p["tipo"] != "R" or p["zona"] != z: continue
-		if occupata(pid): continue
+		if occupata(pid) or carro_in(p["hex"][0]): continue
 		if not in_comunicazione(pid): continue
 		cand.append(pid)
 	if cand.is_empty():
@@ -877,7 +964,12 @@ func rinforzo_zona(z: String) -> void:
 	if r.is_empty():
 		dlog("I rinforzi tedeschi sono esauriti.", "info")
 		return
-	piazza_rinforzo(scelta, r, r[0] != "T", false)
+	if variante("corazzati") and estesa() and s["flag"].get("secondo_evento", false) and s["pool"]["T"].is_empty() and not s["flag"].get("carro_entrato", false):
+		if carro_puo_entrare(scelta):
+			s["pool"]["D"].append(r)
+			entra_carro(scelta)
+			return
+	piazza_rinforzo(scelta, r, r[0] != "T" or variante("reazione"), false)
 
 func piazza_rinforzo(pid: String, r: Array, con_dm: bool, rivelato: bool) -> void:
 	var h: String = mappa.posizioni[pid]["hex"][0]
@@ -915,6 +1007,7 @@ func rinforzo_da_wn(wn_pid: String, rivelato := false) -> void:
 func aggiungi_dm(sett: String) -> void:
 	var cand: Array = []
 	for pid in pos_attive():
+		if mappa.posizioni[pid]["tipo"] == "K": continue
 		if not s["de"][pid]["dm"].is_empty(): continue
 		if sett != "" and settore_pos(pid) != sett: continue
 		if not in_comunicazione(pid): continue
@@ -1026,7 +1119,7 @@ func fase_fuoco() -> void:
 			azioni_tedesche(sett, c)
 		else:
 			fuoco_settore(sett, c)
-		if s["turno"] >= 4 and c["art"] != null:
+		if s["turno"] >= (5 if variante("bombardamento") else 4) and c["art"] != null:
 			artiglieria(sett, c)
 		# tolgo la confusione alle posizioni dei colori pescati (6.4)
 		var cols: Array = c["fuoco"].map(func(q): return q["col"])
@@ -1093,7 +1186,12 @@ func fuoco_pos(f: Dictionary, c: Dictionary, gia_passo: Dictionary) -> int:
 			var campo = mappa.campo(f["pid"])
 			var q: Dictionary = f["q"]
 			var cand: Array = []
+			var hk: String = mappa.posizioni[f["pid"]]["hex"][0]
+			var carro: bool = mappa.posizioni[f["pid"]]["tipo"] == "K"
 			for h in campo:
+				# 23.42: un carro in alto spara in basso solo se è adiacente al terreno basso; dal basso non spara in alto
+				if carro and mappa.alto(hk) and mappa.basso(h) and not mappa.vicini(hk).any(func(x): return mappa.basso(x)): continue
+				if carro and mappa.basso(hk) and mappa.alto(h): continue
 				var liv: int = campo[h]
 				if liv == 1 and s["flag"].get("piombante", false) and mappa.protezione.has(h):
 					liv = 2
@@ -1402,6 +1500,11 @@ func azioni_tedesche(sett: String, c: Dictionary) -> void:
 	for pid in lista:
 		var q = _quadrato(c, colore(pid))
 		var az: String = q.get("az", "F")
+		if mappa.posizioni[pid]["tipo"] == "K":
+			if not s["de"].has(pid) or s["de"][pid]["conf"]: continue
+			if q["doppio"] and s["de"][pid]["dm"].is_empty(): continue
+			colpi += azione_carro(pid, az, c)
+			continue
 		var parti = gruppo(pid)
 		var occ = parti.any(func(x): return occupata(x))
 		var wn: bool = mappa.posizioni[pid]["tipo"] == "WN"
@@ -1833,3 +1936,186 @@ func prepara_oltre() -> void:
 			metti_in_box(u)
 	for h in ["0612", "0613", "0614", "0615", "0616", "0523", "0524", "0525", "0426"]:
 		s["bonificati"][h] = true
+
+# ================================================================ variante: carri tedeschi (23)
+func carro_in(h: String) -> bool:
+	for k in s.get("carri", {}):
+		if s["carri"][k]["hex"] == h: return true
+	return false
+
+## Ricostruisce le «posizioni» mobili dei carri tedeschi: hanno id K0..K3, colore proprio e campo di fuoco calcolato
+func sync_carri() -> void:
+	for k in mappa.posizioni.keys():
+		if mappa.posizioni[k]["tipo"] == "K":
+			mappa.posizioni.erase(k)
+			mappa.fuoco.erase(k)
+	mappa.hex_pos = mappa.hex_pos_base.duplicate()
+	for k in s.get("carri", {}):
+		var c: Dictionary = s["carri"][k]
+		mappa.posizioni[k] = {"id": k, "tipo": "K", "col": c["col"], "hex": [c["hex"]], "zona": "", "prio": 0}
+		mappa.fuoco[k] = campo_carro(c["hex"])
+		mappa.hex_pos[c["hex"]] = k
+
+func _vuoto(h: String) -> bool:
+	return mappa.terreno(h) in ["altura", "spiaggia", "pianoro", "bosco", "accidentato"] and not mappa.edifici(h)
+
+## 23.3: adiacenti vuoti o boschi intensi, bocage ed edifici costanti; a due esagoni, accanto a un esagono intenso
+func campo_carro(h: String) -> Dictionary:
+	var o = {}
+	for v in mappa.vicini(h):
+		o[v] = 3 if _vuoto(v) else 2
+	for v in o.keys():
+		if o[v] != 3: continue
+		for w in mappa.vicini(v):
+			if w == h or o.has(w) and Mappa.distanza(w, h) == 1: continue
+			if Mappa.distanza(w, h) != 2: continue
+			var liv = 3 if _vuoto(w) else 2
+			o[w] = max(int(o.get(w, 0)), liv)
+	return o
+
+func _strade_carro(h: String) -> Array:
+	var o: Array = []
+	for v in mappa.vicini(h):
+		if mappa.strada(h, v) in ["P", "S", "M"]: o.append(v)
+	return o
+
+func _bloccato_us(h: String) -> bool:
+	return not combattenti_in(h).is_empty()
+
+## 23.2: la posizione ha una strada e un percorso stradale libero verso le uscite B, C, D o E
+func carro_puo_entrare(pid: String) -> bool:
+	if s["pool"]["A"].is_empty(): return false
+	var h: String = mappa.posizioni[pid]["hex"][0]
+	if not mappa.ha_strada(h, ["P", "S"]): return false
+	var ctrl = controllo()
+	var uscite = {}
+	for x in mappa.esagoni:
+		if mappa.esagoni[x].get("uscita", "") in ["B", "C", "D", "E"]: uscite[x] = true
+	var coda: Array = [h]
+	var visti = {h: true}
+	while not coda.is_empty():
+		var x: String = coda.pop_front()
+		if uscite.has(x): return true
+		for v in mappa.vicini(x):
+			if visti.has(v) or not mappa.strada(x, v) in ["P", "S", "M"]: continue
+			if ctrl.has(v): continue
+			visti[v] = true
+			coda.append(v)
+	return false
+
+func entra_carro(pid: String) -> void:
+	var i: int = s["pool"]["A"].pop_back()
+	var d: Dictionary = def_tedeschi["rinforzi"]["A"][i]
+	var k = "K%d" % i
+	var h: String = mappa.posizioni[pid]["hex"][0]
+	s["carri"][k] = {"hex": h, "col": d["col"], "fermo": false}
+	var dm = {}
+	if not s["pool"]["corazzati"].is_empty():
+		dm = {"p": "corazzati", "i": s["pool"]["corazzati"].pop_back(), "riv": false}
+	s["de"][k] = {"u": {"k": "A", "i": i, "riv": true}, "dm": dm, "conf": false}
+	s["carri_entrati"] = int(s.get("carri_entrati", 0)) + 1
+	s["flag"]["carro_entrato"] = true
+	sync_carri()
+	dlog("Arriva un CARRO TEDESCO (%s) nella %s!" % [d["id"], nome_pos(pid)], "tedesco")
+
+func elimina_carro(k: String) -> void:
+	s["carri"].erase(k)
+	s["de"].erase(k)
+	sync_carri()
+
+func _us_nel_campo_carro(k: String) -> Array:
+	return us_nel_campo(k)
+
+func _us_adiacenti(h: String) -> bool:
+	return mappa.vicini(h).any(func(v): return not combattenti_in(v).is_empty())
+
+func _spara_carro(k: String, c: Dictionary) -> int:
+	var limite = 1 + (0 if s["de"][k]["dm"].is_empty() else 1)
+	var f = {"pid": k, "parti": [k], "limite": limite * 2, "nascosta": false, "q": _quadrato(c, colore(k))}
+	return fuoco_pos(f, c, {})
+
+## Percorso del carro: verso un'unità US entro 3 esagoni di strada, altrimenti verso la fine della strada sulla spiaggia
+func _passi_carro(k: String, n: int, annienta := false) -> Array:
+	var h: String = s["carri"][k]["hex"]
+	var prec = {h: ""}
+	var coda: Array = [h]
+	var dist = {h: 0}
+	while not coda.is_empty():
+		var x: String = coda.pop_front()
+		for v in _strade_carro(x):
+			if prec.has(v): continue
+			if _bloccato_us(v) and not annienta and dist[x] >= 0:
+				prec[v] = x
+				dist[v] = dist[x] + 1
+				continue
+			prec[v] = x
+			dist[v] = dist[x] + 1
+			coda.append(v)
+	var obiettivo = ""
+	var best = 99
+	for v in dist:
+		if v != h and _bloccato_us(v) and dist[v] <= 3 and dist[v] < best:
+			best = dist[v]; obiettivo = v
+	if obiettivo == "":
+		for v in mappa.fine_carri:
+			if dist.has(v) and dist[v] < best:
+				best = dist[v]; obiettivo = v
+	if obiettivo == "": return []
+	var path: Array = []
+	var x2: String = obiettivo
+	while x2 != h:
+		path.push_front(x2)
+		x2 = prec[x2]
+	return path.slice(0, n)
+
+func muovi_carro(k: String, n: int, annienta := false) -> bool:
+	if s["carri"][k].get("fermo", false): return false
+	var path = _passi_carro(k, n, annienta)
+	var arrivo = ""
+	var incontri = 0
+	for i in path.size():
+		var v: String = path[i]
+		var us = combattenti_in(v)
+		if not us.is_empty():
+			if not annienta or i >= 3 or us.any(func(u): return tipo(u) == "carro") or incontri >= 1:
+				break
+			incontri += 1
+			for u in us:
+				if u["conf"] == 0: u["conf"] = 1
+			dlog("Il carro tedesco travolge le unità in %s: in confusione." % v, "danno")
+			continue
+		if tedesco_in(v): continue
+		arrivo = v
+		if v in mappa.fine_carri: break
+	if arrivo == "": return false
+	s["carri"][k]["hex"] = arrivo
+	if arrivo in mappa.fine_carri:
+		s["carri"][k]["fermo"] = true
+	sync_carri()
+	dlog("Il %s avanza fino a %s." % [nome_pos(k), arrivo], "tedesco")
+	return true
+
+## Le cinque azioni dei carri tedeschi (23.4)
+func azione_carro(k: String, az: String, c: Dictionary) -> int:
+	var h: String = s["carri"][k]["hex"]
+	var nel_campo = not _us_nel_campo_carro(k).is_empty()
+	match az:
+		"R":
+			if muovi_carro(k, 4, true): return 0
+			return _spara_carro(k, c) if nel_campo else 0
+		"M":
+			if muovi_carro(k, 4): return 0
+			return _spara_carro(k, c) if nel_campo else 0
+		"P":
+			var mosso = muovi_carro(k, 3)
+			if mosso:
+				return _spara_carro(k, c) if _us_adiacenti(s["carri"][k]["hex"]) else 0
+			return _spara_carro(k, c) if nel_campo else 0
+		"A":
+			if _us_adiacenti(h): return _spara_carro(k, c)
+			muovi_carro(k, 4)
+			return 0
+		_:
+			if nel_campo: return _spara_carro(k, c)
+			muovi_carro(k, 4)
+			return 0

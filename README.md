@@ -20,8 +20,15 @@ lungo le frecce, imboscata), movimento di due esagoni di fanteria e leader, carr
 dell'artiglieria, Posti di Comando, Basi del Genio con gestione del traffico, bonifica di ciottoli, fossi, muri e strade
 minate, guarnigioni, uscita dalla mappa e punti vittoria finali della regola 20.3.
 
-Non ancora presenti: le varianti storiche opzionali (22) e i carri tedeschi (23). Il percorso delle avanzate tedesche
-usa gli esagoni adiacenti a partenza e arrivo (approssimazione dei diagrammi del regolamento).
+Varianti opzionali (dal menu iniziale): bombardamento alleato efficace (22.1), carri della prima ondata al sicuro
+(22.2), Ranger a Pointe du Hoc (22.3), reazione tedesca migliorata (22.4) e carri tedeschi (23) con ingresso dal
+secondo evento, campo di fuoco mobile, azioni dalle carte, movimento lungo strade principali, secondarie e minate e
+sconfitta decisiva se un carro raggiunge una fine strada sulla spiaggia. Le strade della mappa sono state ridigitalizzate
+distinguendo principali, secondarie, sentieri e strade minate (tools/estrazione/strade_finali.py).
+
+Approssimazioni: il carro tedesco senza bersagli US entro tre esagoni di strada segue il percorso stradale più breve
+verso la fine strada più vicina invece della mappa degli ordini di movimento; il percorso delle avanzate tedesche usa i
+diagrammi del regolamento.
 
 ## Tutorial e aiuto
 

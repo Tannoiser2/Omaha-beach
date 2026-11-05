@@ -50,6 +50,7 @@ var tut_indietro: Button
 var tut_evid := {}
 var tut_timer := 0.0
 var aiuto_dati: Array = []
+var varianti_scelte := {}
 var btn_fine: Button
 var btn_navale: Button
 var chk_pila: CheckBox
@@ -382,6 +383,9 @@ func disegna(c: CanvasItem) -> void:
 			c.draw_rect(Rect2(cg - Vector2(16, 11), Vector2(32, 22)), Color(0.15, 0.4, 0.2))
 			c.draw_rect(Rect2(cg - Vector2(16, 11), Vector2(32, 22)), Color.WHITE, false, 1.5)
 			c.draw_string(f_titoli, cg + Vector2(-12, 6), "GUA", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color.WHITE)
+	if g.variante("corazzati") and g.estesa():
+		for h in m.fine_carri:
+			_bordo(c, h, Color(0.9, 0.05, 0.05, 0.9), 5.0)
 	# ostacoli bonificati
 	for h in g.s["bonificati"]:
 		var t = _t("bonificato")
@@ -772,7 +776,7 @@ func _info_tedesco(pid: String) -> void:
 	var de: Dictionary = g.s["de"][pid]
 	box_unita.add_child(_label(g.nome_pos(pid), 22, f_titoli, COLORI[g.colore(pid)]))
 	var righe: Array = []
-	var tipo = "Widerstandsnest" if g.mappa.posizioni[pid]["tipo"] == "WN" else "posizione di rinforzo"
+	var tipo = {"WN": "Widerstandsnest", "R": "posizione di rinforzo", "K": "carro tedesco, si muove lungo le strade"}[g.mappa.posizioni[pid]["tipo"]]
 	righe.append("%s, colore %s." % [tipo, g.colore(pid)])
 	if de["u"]["riv"]:
 		righe.append("Unità rivelata: " + g.descrivi_tedesco(pid) + ".")
@@ -945,11 +949,15 @@ func _mostra_menu() -> void:
 	menu.add_child(sf)
 	var p = PanelContainer.new()
 	p.anchor_left = 0.5; p.anchor_top = 0.5; p.anchor_right = 0.5; p.anchor_bottom = 0.5
-	p.offset_left = -330; p.offset_right = 330; p.offset_top = -330; p.offset_bottom = 330
+	p.offset_left = -360; p.offset_right = 360; p.offset_top = -440; p.offset_bottom = 440
 	menu.add_child(p)
+	var scm = ScrollContainer.new()
+	scm.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	p.add_child(scm)
 	var v = VBoxContainer.new()
-	v.add_theme_constant_override("separation", 10)
-	p.add_child(v)
+	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	v.add_theme_constant_override("separation", 8)
+	scm.add_child(v)
 	var t1 = _label("D-DAY AT", 30, f_titoli, Color(0.15, 0.62, 0.32))
 	t1.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(t1)
@@ -964,6 +972,18 @@ func _mostra_menu() -> void:
 	v.add_child(_bottone("La prima ondata - turni 1-16, tutta la spiaggia", func(): _nuova("prima_ondata")))
 	v.add_child(_bottone("D-Day at Omaha Beach - turni 1-32, la giornata intera", func(): _nuova("dday")))
 	v.add_child(_bottone("Oltre la spiaggia - turni 17-32, dalle 10:00 verso l'entroterra", func(): _nuova("oltre")))
+	v.add_child(_label("Varianti opzionali (regole 22 e 23), per chi conosce già il gioco:", 15, null, C_KAKI))
+	for k in ["bombardamento", "carri_sicuri", "ranger", "reazione", "corazzati"]:
+		var cb = CheckBox.new()
+		cb.text = {"bombardamento": "Bombardamento alleato efficace: si parte al turno 4, WN colpite (-10 PV)",
+			"carri_sicuri": "I carri della prima ondata sono al sicuro (-5 PV)",
+			"ranger": "I Ranger rinforzano Pointe du Hoc: resta solo C/2R (+5 PV)",
+			"reazione": "Reazione tedesca migliorata (solo D-Day e Oltre la spiaggia, +5 PV)",
+			"corazzati": "Carri tedeschi dal turno 17 (solo D-Day e Oltre la spiaggia, +1 PV per carro)"}[k]
+		cb.button_pressed = varianti_scelte.has(k)
+		cb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		cb.toggled.connect(_scegli_variante.bind(k))
+		v.add_child(cb)
 	if FileAccess.file_exists(SALVATAGGIO):
 		v.add_child(_bottone("Continua la partita salvata su questo dispositivo", _carica_locale))
 	if not g.s.is_empty() and g.s["fine"] == "":
@@ -988,7 +1008,7 @@ func _nuova(scen: String, seme := 0) -> void:
 	if seme == 0:
 		_chiudi_tutorial()
 	registro_txt.clear()
-	g.nuova(scen, seme)
+	g.nuova(scen, seme, {} if seme != 0 else varianti_scelte)
 	menu.visible = false
 	sel = {}
 	cam.position = g.mappa.centro("0712" if scen == "easy_fox" else "0718")
@@ -1293,3 +1313,7 @@ func _aiuto(cap: int) -> void:
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		ind.add_child(b)
 	mostra.call(max(cap, 0))
+
+func _scegli_variante(on: bool, k: String) -> void:
+	if on: varianti_scelte[k] = true
+	else: varianti_scelte.erase(k)

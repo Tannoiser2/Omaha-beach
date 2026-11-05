@@ -6,7 +6,7 @@ extends RefCounted
 
 var esagoni: Dictionary = {}      # "0513" -> {t, s, ost, cio, ed, uscita}
 var lati: Dictionary = {}         # "0513|0613" -> "B" duna, "L" pendio, "C" scogliera scalabile, "X" a picco, "W" muro o fosso anticarro, "A" argine, "G" ciottoli
-var strade: Dictionary = {}       # "0830|0831" -> "P" principale, "S" secondaria o sentiero, "M" strada minata
+var strade: Dictionary = {}       # "0830|0831" -> "P" principale, "S" secondaria, "T" sentiero, "M" strada minata
 var minati: Dictionary = {}       # esagoni con una strada minata
 var posizioni: Dictionary = {}    # id -> {id, tipo, col, hex[], zona, prio, ed, art, gruppo}
 var fuoco: Dictionary = {}        # id posizione (o gruppo WN) -> {hex: livello 3 intenso, 2 costante, 1 sporadico}
@@ -16,6 +16,8 @@ var uscite: Dictionary = {}
 var draws: Dictionary = {}
 var griglia: Dictionary = {}
 var hex_pos: Dictionary = {}      # hex -> id posizione
+var hex_pos_base: Dictionary = {}
+var fine_carri: Array = []
 var bassa_set: Dictionary = {}
 var media_set: Dictionary = {}
 var alta_set: Dictionary = {}
@@ -42,6 +44,8 @@ func carica(percorso := "res://data/mappa.json") -> void:
 	for id in posizioni:
 		for h in posizioni[id]["hex"]:
 			hex_pos[h] = id
+	hex_pos_base = hex_pos.duplicate()
+	fine_carri = d.get("fine_carri", [])
 	for b in box.values():
 		if b.has("bassa"): bassa_set[b["bassa"]] = true
 		if b.has("media"): media_set[b["media"]] = true

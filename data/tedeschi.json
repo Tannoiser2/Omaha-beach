@@ -572,6 +572,41 @@
 "forza": 3,
 "tattico": false
 }
+],
+"corazzati": [
+{
+"img": "dm_corazzati_0",
+"armi": [
+"FL"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_corazzati_1",
+"armi": [
+"FL",
+"DE"
+],
+"forza": 2,
+"tattico": false
+},
+{
+"img": "dm_corazzati_2",
+"armi": [
+"FL"
+],
+"forza": 3,
+"tattico": false
+},
+{
+"img": "dm_corazzati_3",
+"armi": [
+"NA"
+],
+"forza": 3,
+"tattico": false
+}
 ]
 },
 "rinforzi": {
@@ -847,6 +882,50 @@
 ],
 "forza": 4,
 "div": 352
+}
+],
+"A": [
+{
+"id": "2/2/352PzJ",
+"img": "k_2_2_352PzJ",
+"armi": [
+"AR"
+],
+"forza": 7,
+"div": 352,
+"col": "blu"
+},
+{
+"id": "2/1/352PzJ",
+"img": "k_2_1_352PzJ",
+"armi": [
+"MO",
+"MG"
+],
+"forza": 6,
+"div": 352,
+"col": "viola"
+},
+{
+"id": "1/1/352PzJ",
+"img": "k_1_1_352PzJ",
+"armi": [
+"AR"
+],
+"forza": 6,
+"div": 352,
+"col": "verde"
+},
+{
+"id": "1/2/352PzJ",
+"img": "k_1_2_352PzJ",
+"armi": [
+"FL",
+"BZ"
+],
+"forza": 7,
+"div": 352,
+"col": "rosso"
 }
 ]
 },

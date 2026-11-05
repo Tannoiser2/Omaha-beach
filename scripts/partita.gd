@@ -179,6 +179,20 @@ func mosse(u: Dictionary) -> Dictionary:
 						if not piena.call(w) and not o.has(w):
 							o[w] = "strada"
 							percorsi[w] = np
+	# 23.6: la fanteria adiacente a un carro tedesco e nel suo campo può allontanarsi gratis
+	if fanteria(u) and not s.get("carri", {}).is_empty() and s["fase"] == "azioni" and not u["agito"] and u["conf"] == 0 and u["scalata"] == "":
+		var minacciata = false
+		for k in s["carri"]:
+			if Mappa.distanza(h, s["carri"][k]["hex"]) == 1 and mappa.campo(k).has(h): minacciata = true
+		if minacciata:
+			for v in mappa.vicini(h):
+				if passo_ok(u, h, v, area) == "" or piena.call(v): continue
+				var sicuro = true
+				for k in s["carri"]:
+					if Mappa.distanza(v, s["carri"][k]["hex"]) <= 1 or mappa.campo(k).has(v): sicuro = false
+				if sicuro:
+					o[v] = "autocons"
+					percorsi[v] = [v]
 	if solo_auto:
 		for v in o.keys():
 			if o[v] != "autocons": o.erase(v)
@@ -407,6 +421,8 @@ func armi_unita(u: Dictionary, T: String) -> Array:
 	return a
 
 func _moltiplicatori(T: String, lista: Array) -> Vector2i:
+	if mappa.posizioni[pos_di(T)]["tipo"] == "K":
+		return Vector2i(1, 1)
 	var mu = 1
 	var md = 1
 	var t = mappa.terreno(T)
@@ -610,6 +626,10 @@ func _conf_attaccanti(T: String, lista: Array, righe: Array) -> void:
 func _sconfitta(pid: String, righe: Array) -> void:
 	var de: Dictionary = s["de"][pid]
 	var u: Dictionary = de["u"]
+	if u["k"] == "A":
+		righe.append("Il carro tedesco è distrutto.")
+		elimina_carro(pid)
+		return
 	var d = def_tedesca(pid)
 	var ritira: bool = u["k"] != "wn" and int(d.get("div", 716)) == 352 and in_comunicazione(pid)
 	if ritira:
@@ -777,14 +797,15 @@ func punti_vittoria() -> Dictionary:
 			var parti = gruppo(pid)
 			var tutti = parti.all(func(x): return c.has(mappa.posizioni[x]["hex"][0]))
 			if tutti: wn += parti.size()
-		else:
+		elif p["tipo"] == "R":
 			if c.has(p["hex"][0]): rin += 1
 	for nome in mappa.draws:
 		var hh: Array = mappa.draws[nome]
 		if easy() and mappa.settore(hh[0]) == "W": continue
 		if hh.all(func(h): return c.has(h)): dr += 5
 	var soglia = 9 if easy() else (25 if s["scenario"] == "dday" else 19)
-	return {"wn": wn, "rinforzi": rin, "valli": dr, "totale": wn + rin + dr, "soglia": soglia, "estesa": false}
+	var mv = modifica_varianti()
+	return {"wn": wn, "rinforzi": rin, "valli": dr, "totale": wn + rin + dr + mv, "soglia": soglia, "estesa": false, "varianti": mv}
 
 ## Punti Vittoria della modalità estesa (20.3)
 func punti_estesi(c: Dictionary) -> Dictionary:
@@ -813,9 +834,10 @@ func punti_estesi(c: Dictionary) -> Dictionary:
 		elif x["tipo"] != "ranger" and _com_us.has(h_usc):
 			usciti += int(x["passi"])
 	var meyer: int = s["pool"]["M"].size()
-	var tot = rin + valli + alture + usciti - wn_meno - meyer
+	var mv = modifica_varianti()
+	var tot = rin + valli + alture + usciti - wn_meno - meyer + mv
 	return {"rinforzi": rin, "valli": valli, "alture": alture, "usciti": usciti, "wn_meno": wn_meno, "meyer": meyer,
-		"totale": tot, "soglia": 45 if s["scenario"] == "oltre" else 40, "estesa": true, "wn": 0}
+		"totale": tot, "soglia": 45 if s["scenario"] == "oltre" else 40, "estesa": true, "wn": 0, "varianti": mv}
 
 func controllo_prima_vittoria() -> void:
 	var p = punti_vittoria()
@@ -900,3 +922,10 @@ func importa(d: Dictionary) -> void:
 		b["i"] = int(b["i"]); b["div"] = int(b["div"])
 	for k in s["cp"]:
 		s["cp"][k] = int(s["cp"][k])
+	if not s.has("varianti"): s["varianti"] = {}
+	if not s.has("carri"): s["carri"] = {}
+	for k in ["A", "corazzati"]:
+		if not s["pool"].has(k): s["pool"][k] = []
+	for k in s["de"]:
+		if not s["de"][k]["u"].is_empty(): s["de"][k]["u"]["i"] = int(s["de"][k]["u"]["i"])
+	sync_carri()
