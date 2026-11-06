@@ -48,6 +48,7 @@ var tut_compito: Label
 var tut_avanti: Button
 var tut_indietro: Button
 var tut_evid := {}
+var tut_guida := {}
 var tut_timer := 0.0
 var aiuto_dati: Array = []
 var varianti_scelte := {}
@@ -394,7 +395,8 @@ func disegna(c: CanvasItem) -> void:
 	if not tut.is_empty():
 		var a = 0.55 + 0.35 * sin(Time.get_ticks_msec() / 250.0)
 		for h in tut_evid:
-			_bordo(c, h, Color(1.0, 0.85, 0.1, a), 6.0)
+			var col_t = Color(1.0, 1.0, 1.0, a) if tut_evid[h] is String and tut_evid[h] == "m" else Color(1.0, 0.85, 0.1, a)
+			_bordo(c, h, col_t, 6.0)
 	# bersagli dell'azione in corso
 	for h in bersagli:
 		_riempi(c, h, Color(0.9, 0.1, 0.1, 0.30))
@@ -1165,6 +1167,20 @@ func _entra_passo() -> void:
 	if p.has("zoom"):
 		cam.zoom = Vector2(p["zoom"], p["zoom"])
 	tut_evid = _evidenzia(p.get("evid", ""))
+	tut_guida = {}
+	if p.has("guida"):
+		tut_guida = Guida.new(g).guida(p["guida"])
+		if tut_guida.get("ok", false):
+			for h in tut_guida["mete"]: tut_evid[h] = "m"
+			if tut_guida["unita"] != "":
+				tut_evid[tut_guida["unita"]] = "u"
+				cam.position = g.mappa.centro(tut_guida["unita"])
+			elif not tut_guida["mete"].is_empty():
+				cam.position = g.mappa.centro(tut_guida["mete"][0])
+			if cam.zoom.x < 0.7: cam.zoom = Vector2(0.8, 0.8)
+		sel = {}
+		_aggiorna()
+		_salva_locale()
 	_aggiorna_tutorial()
 	tavolo.queue_redraw()
 
@@ -1174,7 +1190,13 @@ func _aggiorna_tutorial() -> void:
 	tut_testo.text = p["testo"]
 	if p.has("compito"):
 		tut_compito.visible = true
-		tut_compito.text = ("Fatto: " if tut_fatto else "Compito: ") + p["compito"]["testo"]
+		var ct: String = p["compito"]["testo"]
+		if p.has("guida"):
+			if tut_guida.get("ok", false):
+				ct = tut_guida.get("nota", "") + " " + tut_guida["testo"]
+			else:
+				ct = "In questa situazione l'esercizio non è possibile: premi «Salta»."
+		tut_compito.text = ("Fatto: " if tut_fatto else "Compito: ") + ct.strip_edges()
 		tut_compito.add_theme_color_override("font_color", Color(0.1, 0.5, 0.2) if tut_fatto else Color(0.75, 0.35, 0.0))
 	else:
 		tut_compito.visible = false

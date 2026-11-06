@@ -66,7 +66,8 @@
      "tipo": "log",
      "cerca": "si mette al riparo",
      "testo": "Fai un movimento di riparo con una fanteria."
-    }
+    },
+    "guida": "riparo"
    },
    {
     "titolo": "Muovere spendendo un'azione",
@@ -75,7 +76,8 @@
      "tipo": "log",
      "cerca": "si sposta",
      "testo": "Muovi un'unità su un esagono verde."
-    }
+    },
+    "guida": "muovi"
    },
    {
     "titolo": "Fine della fase",
@@ -92,22 +94,23 @@
    },
    {
     "titolo": "Le dune",
-    "testo": "La linea rossa tratteggiata è una [b]duna[/b] (bluff). La fanteria la supera con una [b]scalata[/b] (esagono arancio): entra oltre la duna e riceve il segnalino Scalata; al turno dopo lo toglie gratis (pulsante «Completa la scalata»). Dalla spiaggia non si attacca attraverso una duna: bisogna salire.\n\nGli esagoni evidenziati sono quelli della spiaggia da cui si sale una duna. Se puoi, fai salire una fanteria.",
+    "testo": "La linea rossa tratteggiata è una [b]duna[/b] (bluff). La fanteria la supera con una [b]scalata[/b] (esagono arancio): entra oltre la duna e riceve il segnalino Scalata; al turno dopo lo toglie gratis (pulsante «Completa la scalata»). Dalla spiaggia non si attacca attraverso una duna: bisogna salire.\n\nOra fai salire una fanteria: il compito qui sotto indica quale e dove.",
     "compito": {
      "tipo": "log",
      "cerca": "scala la duna",
-     "testo": "Fai scalare una duna a una fanteria (se possibile)."
+     "testo": "Fai scalare una duna a una fanteria."
     },
-    "evid": "dune"
+    "guida": "duna"
    },
    {
     "titolo": "Attaccare una posizione",
-    "testo": "Per attaccare serve una [b]fanteria adiacente[/b] alla posizione. Seleziona la fanteria e premi [b]Attacca[/b]: le posizioni attaccabili diventano rosse; cliccane una e scegli chi partecipa (carri e contraerea possono unirsi da lontano se adiacenti alla fanteria o sotto comando).\n\nLa finestra mostra forza e armi. Il risultato dipende da:\n- rapporto di forze (difesa raddoppiata da ciottoli, pendii, edifici, bocage);\n- [b]armi richieste[/b]: sono stampate sull'unità tedesca e sul segnalino Incognita;\n- se il segnalino Incognita è nascosto o rivelato.\n\nVedi la Tabella risultati attacco nell'aiuto. Prova un attacco appena una fanteria è adiacente a una WN.",
+    "testo": "Per attaccare serve una [b]fanteria adiacente[/b] alla posizione. Seleziona la fanteria e premi [b]Attacca[/b]: le posizioni attaccabili diventano rosse; cliccane una e scegli chi partecipa (carri e contraerea possono unirsi da lontano se adiacenti alla fanteria o sotto comando).\n\nLa finestra mostra forza e armi. Il risultato dipende da:\n- rapporto di forze (difesa raddoppiata da ciottoli, pendii, edifici, bocage);\n- [b]armi richieste[/b]: sono stampate sull'unità tedesca e sul segnalino Incognita;\n- se il segnalino Incognita è nascosto o rivelato.\n\nVedi la Tabella risultati attacco nell'aiuto. Il compito qui sotto indica una fanteria già accanto a una posizione tedesca: attaccala.",
     "compito": {
      "tipo": "log",
      "cerca": "Attacco contro",
-     "testo": "Attacca una posizione tedesca (quando puoi)."
-    }
+     "testo": "Attacca una posizione tedesca."
+    },
+    "guida": "attacco"
    },
    {
     "titolo": "Il fuoco di sbarramento",
@@ -115,8 +118,9 @@
     "compito": {
      "tipo": "log",
      "cerca": "spara su",
-     "testo": "Fai un fuoco di sbarramento con un carro (se possibile)."
-    }
+     "testo": "Fai un fuoco di sbarramento con un carro."
+    },
+    "guida": "sbarramento"
    },
    {
     "titolo": "La confusione",
@@ -175,16 +179,18 @@
      "tipo": "log",
      "cerca": "si sposta",
      "testo": "Muovi una fanteria."
-    }
+    },
+    "guida": "due_esagoni"
    },
    {
     "titolo": "Posti di Comando",
-    "testo": "Un [b]HQ[/b] fuori dal campo di fuoco potenziale dei tedeschi può diventare [b]Posto di Comando[/b] (pulsante sulla scheda dell'HQ, marchio CP). Non si muove più, ma il suo raggio di comando cresce turno dopo turno fino a 4 esagoni: tutte le unità nel raggio agiscono gratis, hanno la radio e coordinano carri e artiglieria.\n\nSeleziona un HQ e trasformalo in Posto di Comando, se possibile.",
+    "testo": "Un [b]HQ[/b] fuori dal campo di fuoco potenziale dei tedeschi può diventare [b]Posto di Comando[/b] (pulsante sulla scheda dell'HQ, marchio CP). Non si muove più, ma il suo raggio di comando cresce turno dopo turno fino a 4 esagoni: tutte le unità nel raggio agiscono gratis, hanno la radio e coordinano carri e artiglieria.\n\nSeleziona l'HQ indicato e trasformalo in Posto di Comando.",
     "compito": {
      "tipo": "log",
      "cerca": "Posto di Comando (raggio",
      "testo": "Stabilisci un Posto di Comando."
-    }
+    },
+    "guida": "cp"
    },
    {
     "titolo": "Basi del Genio",
@@ -193,7 +199,8 @@
      "tipo": "log",
      "cerca": "stabilisce una base",
      "testo": "Piazza una Base del Genio."
-    }
+    },
+    "guida": "base"
    },
    {
     "titolo": "Carri e artiglieria",
